@@ -93,14 +93,25 @@ const ChatWindow: React.FC = () => {
     };
 
     const onerror = (err: any) => {
-      setMessages((prevState) => [
-        ...prevState,
-        {
-          author: "bot",
-          text: "Can't generate text. Please try again",
-          type: "error",
-        },
-      ]);
+      if (messages[messages.length - 1]?.type === "text-loading") {
+        setMessages((prevState) => [
+          ...prevState.slice(0, -1),
+          {
+            author: "bot",
+            text: "Error during text generation. Please try again",
+            type: "error",
+          },
+        ]);
+      } else {
+        setMessages((prevState) => [
+          ...prevState,
+          {
+            author: "bot",
+            text: "Error during text generation. Please try again",
+            type: "error",
+          },
+        ]);
+      }
       throw new Error();
     };
 
