@@ -24,7 +24,7 @@ async def query_synapse_image(dendrite, metagraph, subtensor, prompt):
     try:
         axon = metagraph.axons[87]  # 87, 91, 98
         engine = "dall-e-3"
-        size = "1024x1792"
+        size = "1792x1024"
         quality = "standard"
         style = "vivid"
 
