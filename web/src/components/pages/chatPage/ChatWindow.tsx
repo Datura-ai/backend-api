@@ -5,11 +5,13 @@ import Message from "../../../types/Message";
 import InputBar from "./InputBar";
 import { fetchTextMessage, generateImage } from "../../../services/api";
 import { EventSourceMessage } from "@microsoft/fetch-event-source";
+import { useParams } from "react-router-dom";
 
 const ChatWindow: React.FC = () => {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [mode, setMode] = useState<"image" | "text">("text");
   const [inputEnabled, setInputEnabled] = useState<boolean>(true);
+  const { uuid } = useParams<{ uuid: string }>(); // Extract UUID from the URL
 
   const handleSendMessage = (newMessage: string) => {
     setMessages((prevState) => [
@@ -34,7 +36,7 @@ const ChatWindow: React.FC = () => {
           { author: "bot", text: "", type: "image-loading" },
         ]);
         setInputEnabled(false);
-        generateImage(newMessage)
+        generateImage(uuid!, newMessage)
           .then((data) => {
             setMessages((prevState) => [
               ...prevState.slice(0, -1),
@@ -124,6 +126,7 @@ const ChatWindow: React.FC = () => {
       messages[messages.length - 1]?.type === "text-loading"
     ) {
       fetchTextMessage(
+        uuid!,
         messages[messages.length - 2].text,
         onopen,
         onmessage,
@@ -131,7 +134,7 @@ const ChatWindow: React.FC = () => {
         onclose,
       ).catch(() => setInputEnabled(true));
     }
-  }, [messages]);
+  }, [messages, uuid]);
 
   return (
     <Box sx={{ height: "100vh", overflowY: "auto", position: "relative" }}>
