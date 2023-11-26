@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import MessagesContainer from "./MessagesContainer";
 import Message from "../../../types/Message";
 import InputBar from "./InputBar";
-import { fetchTextMessage, generateImage } from "../../../services/api";
+import { fetchTextMessage, generateImage, fetchConversation } from "../../../services/api";
 import { EventSourceMessage } from "@microsoft/fetch-event-source";
 import { useParams } from "react-router-dom";
 
@@ -59,6 +59,40 @@ const ChatWindow: React.FC = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    // Function to fetch the conversation
+    const loadConversation = async () => {
+      try {
+        const response = await fetchConversation(uuid!);
+        if (response.data && response.data.messages) {
+          // Transform and set the messages
+          const transformedMessages = response.data.messages.flatMap((msg: any) => ([
+            {
+              author: "user",
+              text: msg.prompt,
+              type: "text"
+            },
+            {
+              author: "bot",
+              text: msg.answer,
+              type: "text"
+            }
+          ]));
+          setMessages(transformedMessages);
+        }
+      } catch (error) {
+        console.error("Error fetching conversation:", error);
+      }
+    };
+
+    // Call the function to load the conversation
+    if (uuid) {
+      loadConversation();
+    }
+
+    // ... rest of the useEffect hook ...
+  }, [uuid]);  
 
   useEffect(() => {
     const onopen = (res: Response) => {

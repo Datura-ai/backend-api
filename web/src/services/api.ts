@@ -37,3 +37,7 @@ export const fetchTextMessage = async (
     },
   });
 };
+
+export const fetchConversation = (uuid: string) => {
+  return axios.get(`${BACKEND_BASE_URL}/conversation/${uuid}`);
+};

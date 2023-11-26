@@ -3,7 +3,7 @@ import json
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 
 from neurons.api import initialize, query_synapse_image, query_synapse_text
 
@@ -34,17 +34,35 @@ async def get_image(prompt_dict: dict):
         raise HTTPException(status_code=500, detail="Can't generate image. Please try again")
     return image_url
 
+def create_conversation_string(uuid):
+    if uuid not in conversations or 'messages' not in conversations[uuid]:
+        return None
+
+    # Concatenate all prompts and answers into a single text
+    conversation_text = ' '.join([f"prompt: {message['prompt']}\n answer: {message['answer']}" for message in conversations[uuid]['messages']])
+    return conversation_text
 
 def create_summary_prompt(uuid):
     if uuid not in conversations or 'messages' not in conversations[uuid]:
         return None
 
     # Concatenate all prompts and answers into a single text
-    conversation_text = ' '.join([f"prompt: {message['prompt']}\n answer: {message['answer']}" for message in conversations[uuid]['messages']])
+    conversation_text = create_conversation_string(uuid)
 
     # Create a prompt for generating a max 30-character summary
     summary_prompt = f"Tell me in less than 30 characters what is the topic of the following conversation: {conversation_text}"
     return summary_prompt
+
+def create_history_prompt(uuid, prompt):
+    if uuid not in conversations or 'messages' not in conversations[uuid]:
+        return prompt
+
+    # Concatenate all prompts and answers into a single text
+    conversation_text = create_conversation_string(uuid)
+
+    # Create a prompt for generating a max 30-character summary
+    history_prompt = f"Here is a conversation: {conversation_text}. Please continue it with the following prompt: {prompt}. Do not prepend the answer with 'answer', just answer it."
+    return history_prompt
 
 def process_message(message):
     return message[6:-1].strip()
@@ -69,7 +87,8 @@ def update_conversation_messages(uuid, prompt, response_parts):
 async def custom_stream_generator(uuid, dendrite, metagraph, subtensor, prompt):
     response_parts = []  # Temporary list to accumulate response parts
 
-    async for data in query_synapse_text(dendrite, metagraph, subtensor, prompt):
+    history_prompt = create_history_prompt(uuid, prompt)
+    async for data in query_synapse_text(dendrite, metagraph, subtensor, history_prompt):
         # Remove 'data: ' prefix and trailing newlines, then append to the accumulator
         cleaned_data = process_message(data)
         response_parts.append(cleaned_data)        
@@ -95,3 +114,10 @@ async def get_text(request: Request):
 
     return StreamingResponse(custom_stream_generator(uuid, dendrite, metagraph, subtensor, prompt), media_type='text/event-stream')
 
+@app.get("/conversation/{uuid}")
+async def get_conversation(uuid: str):
+    # Check if the UUID exists in the conversations
+    if uuid in conversations:
+        return JSONResponse(content=conversations[uuid])
+    else:
+        raise HTTPException(status_code=404, detail="Conversation not found")
