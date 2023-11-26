@@ -64,23 +64,8 @@ const ChatWindow: React.FC = () => {
     // Function to fetch the conversation
     const loadConversation = async () => {
       try {
-        const response = await fetchConversation(uuid!);
-        if (response.data && response.data.messages) {
-          // Transform and set the messages
-          const transformedMessages = response.data.messages.flatMap((msg: any) => ([
-            {
-              author: "user",
-              text: msg.prompt,
-              type: "text"
-            },
-            {
-              author: "bot",
-              text: msg.answer,
-              type: "text"
-            }
-          ]));
-          setMessages(transformedMessages);
-        }
+        const {data} = await fetchConversation(uuid!);
+        setMessages(data.messages ?? []);
       } catch (error) {
         console.error("Error fetching conversation:", error);
       }

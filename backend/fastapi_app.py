@@ -118,6 +118,13 @@ async def get_text(request: Request):
 async def get_conversation(uuid: str):
     # Check if the UUID exists in the conversations
     if uuid in conversations:
-        return JSONResponse(content=conversations[uuid])
+        transformed_messages = []
+        for message in conversations[uuid]['messages']:
+            # Transform each message into two entries
+            user_message = {'author': 'user', 'text': message['prompt'], 'type': 'text'}
+            bot_message = {'author': 'bot', 'text': message['answer'], 'type': 'text'}
+            transformed_messages.extend([user_message, bot_message])
+
+        return JSONResponse(content={"messages": transformed_messages})
     else:
         raise HTTPException(status_code=404, detail="Conversation not found")
