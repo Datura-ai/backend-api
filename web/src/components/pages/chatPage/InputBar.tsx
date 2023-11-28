@@ -34,11 +34,11 @@ const InputBar: React.FC<InputBarProps> = ({
   return (
     <Box
       sx={{
-        bottom: 0,
+        bottom: 20,
         left: 0,
         right: 0,
         display: "flex",
-        padding: "10px",
+        padding: "16px 60px",
         position: "absolute",
       }}
     >
