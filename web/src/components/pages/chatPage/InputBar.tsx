@@ -32,9 +32,9 @@ const InputBar: React.FC<InputBarProps> = ({
   };
 
   return (
-    <div className="bottom-0 left-0 right-0 flex p-2 bg-slate-100">
+    <div className="bottom-0 left-0 right-0 flex m-4 mx-6 bg-slate-100">
       <select
-        className="min-w-[7vw] text-black"
+        className=" text-black bg-slate-200 p-4"
         onChange={(e) => setMode(e.target.value as "text" | "image")}
         value={mode}
       >
