@@ -124,7 +124,7 @@ const ChatWindow: React.FC = () => {
       messages[messages.length - 1]?.type === "text-loading"
     ) {
       fetchTextMessage(
-        messages[messages.length - 2].text,
+        messages.slice(0, messages.length - 1),
         onopen,
         onmessage,
         onerror,
@@ -134,7 +134,7 @@ const ChatWindow: React.FC = () => {
   }, [messages]);
 
   return (
-    <Box sx={{ height: "100vh", overflowY: "auto", position: "relative" }}>
+    <Box sx={{ height: "calc(100vh - 100px)", overflowY: "auto", position: "relative" }}>
       <MessagesContainer messages={messages} />
       <InputBar
         onSendMessage={handleSendMessage}

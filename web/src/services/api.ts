@@ -10,16 +10,21 @@ export const generateImage = (prompt: string) => {
 };
 
 export const fetchTextMessage = async (
-  prompt: string,
+  messages: any[],
   onopen: (res: Response) => void,
   onmessage: (event: EventSourceMessage) => void,
   onerror: (err: any) => void,
-  onclose: () => void,
+  onclose: () => void
 ) => {
   await fetchEventSource(`${BACKEND_BASE_URL}/generate-text`, {
     method: "POST",
     headers: { Accept: "text/event-stream" },
-    body: JSON.stringify({ prompt: prompt }),
+    body: JSON.stringify({
+      messages: messages.map((val) => ({
+        role: val.author === "bot" ? "assistant" : "user",
+        content: val.text,
+      })),
+    }),
     // @ts-ignore
     onopen(res) {
       onopen(res);
