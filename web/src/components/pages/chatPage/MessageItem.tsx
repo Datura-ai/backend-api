@@ -24,7 +24,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
       );
       break;
     case "text-loading":
-      contentElem = <Skeleton width={"50%"} sx={{ transform: "none" }} />;
+      contentElem = <img src="loading.gif" style={{ height: '50px' }} />;
       break;
     case "error":
       contentElem = (

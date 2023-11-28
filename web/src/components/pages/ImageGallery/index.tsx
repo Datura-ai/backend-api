@@ -102,7 +102,7 @@ const ImagePage: React.FC = () => {
 
   return (
     <LayoutComponent>
-      <Box maxWidth={800} marginX='auto' marginY={2}>
+      <Box maxWidth={1024} marginX='auto' marginY={2}>
         <Box padding={4}>
           <Typography variant="h3" align="center" marginBottom='36px' gutterBottom>
             Image Gallery
