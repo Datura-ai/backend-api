@@ -3,7 +3,6 @@ import json
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from typing import List
 
 from neurons.api import initialize, query_synapse_image, query_synapse_text
 from neurons.conversation_history import ConversationHistory

@@ -3,8 +3,6 @@ import argparse
 import traceback
 import asyncio
 from template.protocol import StreamPrompting, ImageResponse
-from fastapi import Depends
-
 from neurons.conversation_history import ConversationHistory
 
 conversation_history = ConversationHistory()

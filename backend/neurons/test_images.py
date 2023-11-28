@@ -1,4 +1,3 @@
-import requests
 from openai import OpenAI
 
 # Generate image with DALL-E 3

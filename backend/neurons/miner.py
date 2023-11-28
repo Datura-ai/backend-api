@@ -11,8 +11,7 @@ from starlette.types import Send
 from openai import OpenAI
 from openai import AsyncOpenAI
 import bittensor as bt
-from transformers import GPT2Tokenizer
-from typing import List, Dict, Tuple, Union, Callable, Awaitable
+from typing import Dict, Tuple
 from template.protocol import StreamPrompting, IsAlive, ImageResponse
 from config import get_config, check_config
 
