@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, Skeleton, Typography } from "@mui/material";
-import Message from "../../types/Message";
-import ImagePreview from "../commonx/ImagePreview";
-import AvatarGenerator from "../commonx/Avatar/AvatarGenerator";
+import Message from "../../../../../types/Message";
+import ImagePreview from "../../../../ImagePreview";
+import AvatarGenerator from "../../../../Avatar/AvatarGenerator";
 
 import styles from "./messageStyles.module.css";
 
@@ -34,6 +34,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
         </Typography>
       );
   }
+  
   return (
     <Box
       sx={{

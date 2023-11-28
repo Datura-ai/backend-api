@@ -2,8 +2,8 @@ import React from "react";
 
 import "./App.css";
 
-import Layout from "./components/commonx/Layout";
-import ChatPage from "./components/pages/ChatPage";
+import Layout from "./components/Layout";
+import ChatPage from "./components/pages/Chat";
 
 function App() {
   return (

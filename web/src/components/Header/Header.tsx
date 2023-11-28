@@ -1,5 +1,5 @@
 import styles from "./headerStyles.module.css";
-import logoSrc from "../../../assets/taotensor_logo.png";
+import logoSrc from "../../assets/taotensor_logo.png";
 
 const Header = () => {
   return (
