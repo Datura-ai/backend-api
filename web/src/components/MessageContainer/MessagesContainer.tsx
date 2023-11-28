@@ -1,5 +1,5 @@
 import React from "react";
-import Message from "../../../../../types/Message";
+import Message from "../../types/Message";
 import MessageItem from "./MessageItem";
 import { Box, IconButton } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";

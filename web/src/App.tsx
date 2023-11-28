@@ -2,7 +2,7 @@ import React from "react";
 
 import "./App.css";
 
-import Layout from "./components/common/Layout";
+import Layout from "./components/commonx/Layout";
 import ChatPage from "./components/pages/ChatPage";
 
 function App() {

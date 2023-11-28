@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, Skeleton, Typography } from "@mui/material";
-import Message from "../../../../../types/Message";
-import ImagePreview from "../../../../common/ImagePreview";
-import AvatarGenerator from "../../../../common/Avatar/AvatarGenerator";
+import Message from "../../types/Message";
+import ImagePreview from "../commonx/ImagePreview";
+import AvatarGenerator from "../commonx/Avatar/AvatarGenerator";
 
 import styles from "./messageStyles.module.css";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from "@mui/material";
-import ChatWindow from "./chatComponents/ChatWindow";
+import ChatWindow from "../../ChatWindow";
 
 const ChatPage: React.FC = () => {
   return (

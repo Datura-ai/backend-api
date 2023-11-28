@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-import Message from "../../../../../types/Message";
+import Message from "../../types/Message";
 
-import { fetchTextMessage, generateImage } from "../../../../../services/api";
+import { fetchTextMessage, generateImage } from "../../services/api";
 import { EventSourceMessage } from "@microsoft/fetch-event-source";
 
 export const useChatWindow = () => {
