@@ -3,13 +3,15 @@ import { Box } from "@mui/material";
 import MessagesContainer from "./MessagesContainer";
 import Message from "../../../types/Message";
 import InputBar from "./InputBar";
-import { fetchTextMessage, generateImage } from "../../../services/api";
+import { fetchTextMessage, generateImage, fetchConversation } from "../../../services/api";
 import { EventSourceMessage } from "@microsoft/fetch-event-source";
+import { useParams } from "react-router-dom";
 
 const ChatWindow: React.FC = () => {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [mode, setMode] = useState<"image" | "text">("text");
   const [inputEnabled, setInputEnabled] = useState<boolean>(true);
+  const { uuid } = useParams<{ uuid: string }>(); // Extract UUID from the URL
 
   const handleSendMessage = (newMessage: string) => {
     setMessages((prevState) => [
@@ -34,7 +36,7 @@ const ChatWindow: React.FC = () => {
           { author: "bot", text: "", type: "image-loading" },
         ]);
         setInputEnabled(false);
-        generateImage(newMessage)
+        generateImage(uuid!, newMessage)
           .then((data) => {
             setMessages((prevState) => [
               ...prevState.slice(0, -1),
@@ -57,6 +59,25 @@ const ChatWindow: React.FC = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    // Function to fetch the conversation
+    const loadConversation = async () => {
+      try {
+        const {data} = await fetchConversation(uuid!);
+        setMessages(data.messages ?? []);
+      } catch (error) {
+        console.error("Error fetching conversation:", error);
+      }
+    };
+
+    // Call the function to load the conversation
+    if (uuid) {
+      loadConversation();
+    }
+
+    // ... rest of the useEffect hook ...
+  }, [uuid]);  
 
   useEffect(() => {
     const onopen = (res: Response) => {
@@ -124,6 +145,7 @@ const ChatWindow: React.FC = () => {
       messages[messages.length - 1]?.type === "text-loading"
     ) {
       fetchTextMessage(
+        uuid!,
         messages[messages.length - 2].text,
         onopen,
         onmessage,
@@ -131,10 +153,10 @@ const ChatWindow: React.FC = () => {
         onclose,
       ).catch(() => setInputEnabled(true));
     }
-  }, [messages]);
+  }, [messages, uuid]);
 
   return (
-    <Box sx={{ height: "100vh", overflowY: "auto", position: "relative" }}>
+    <div className="flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen w-full">
       <MessagesContainer messages={messages} />
       <InputBar
         onSendMessage={handleSendMessage}
@@ -142,7 +164,7 @@ const ChatWindow: React.FC = () => {
         mode={mode}
         setMode={setMode}
       />
-    </Box>
+    </div>
   );
 };
 

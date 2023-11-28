@@ -4,9 +4,9 @@ import ChatWindow from "./ChatWindow";
 
 const ChatPage: React.FC = () => {
   return (
-    <Container maxWidth={"lg"}>
+    <div className="mx-auto max-w-screen-lg bg-white">
       <ChatWindow />
-    </Container>
+    </div>
   );
 };
 

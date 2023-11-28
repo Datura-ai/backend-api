@@ -32,44 +32,28 @@ const InputBar: React.FC<InputBarProps> = ({
   };
 
   return (
-    <Box
-      sx={{
-        bottom: 0,
-        left: 0,
-        right: 0,
-        display: "flex",
-        padding: "10px",
-        position: "absolute",
-      }}
-    >
-      <Select
+    <div className="bottom-0 left-0 right-0 flex m-4 mx-6 bg-slate-100">
+      <select
+        className=" text-black bg-slate-200 p-4"
         onChange={(e) => setMode(e.target.value as "text" | "image")}
         value={mode}
-        sx={{ minWidth: "7vw" }}
       >
-        <MenuItem value={"text"}>Text</MenuItem>
-        <MenuItem value={"image"}>Image</MenuItem>
-      </Select>
-      <TextField
-        fullWidth
+        <option value="text">Text</option>
+        <option value="image">Image</option>
+      </select>
+      <input
+        type="text"
+        className="w-full focus:outline-none focus:placeholder-gray-400 placeholder-gray-600 pl-4 bg-slate-100 text-lg py-3"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Type a message..."
         disabled={!enabled}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            "&.Mui-focused fieldset": {
-              borderColor: "initial",
-            },
-          },
-          marginLeft: "8px",
-        }}
       />
-      <IconButton onClick={handleSend} color="inherit">
-        <SendIcon fontSize={"large"} />
-      </IconButton>
-    </Box>
+      <button onClick={handleSend} className="text-inherit">
+      <img src="/arrow-up-solid.svg" alt="send" className="w-6 h-6 rounded-full mr-2"/>
+      </button>
+    </div>
   );
 };
 
