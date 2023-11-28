@@ -27,29 +27,26 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages }) => {
 
   useEffect(scrollToBottom, [messages]);
   return (
-    <Box
+    <div
       ref={messagesEndRef}
       onScroll={handleScroll}
-      sx={{
-        height: `85vh`,
-        overflowY: "auto",
-        padding: "16px",
-      }}
+      className="flex flex-col w-full px-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
     >
-      <Box sx={{ overflow: "auto", flexGrow: 1, padding: "10px" }}>
+      <div className="overflow-auto w-full flex-grow px-2.5">
         {messages.map((message, index) => (
           <MessageItem key={index} message={message} />
         ))}
-      </Box>
+      </div>
       {showScrollButton && (
-        <IconButton
+        <button
           onClick={scrollToBottom}
-          sx={{ position: "sticky", bottom: 0, left: "50%" }}
+          className="sticky bottom-0 left-1/2 transform -translate-x-1/2"
         >
-          <ArrowDownwardIcon />
-        </IconButton>
+          {/* Replace with an appropriate arrow down icon or SVG */}
+          <svg className="w-6 h-6" /* ... */></svg>
+        </button>
       )}
-    </Box>
+    </div>
   );
 };
 

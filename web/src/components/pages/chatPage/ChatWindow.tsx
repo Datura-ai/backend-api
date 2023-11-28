@@ -156,7 +156,7 @@ const ChatWindow: React.FC = () => {
   }, [messages, uuid]);
 
   return (
-    <Box sx={{ height: "100vh", overflowY: "auto", position: "relative" }}>
+    <div className="flex-1 p:2 sm:p-6 justify-between flex flex-col h-screen w-full">
       <MessagesContainer messages={messages} />
       <InputBar
         onSendMessage={handleSendMessage}
@@ -164,7 +164,7 @@ const ChatWindow: React.FC = () => {
         mode={mode}
         setMode={setMode}
       />
-    </Box>
+    </div>
   );
 };
 
