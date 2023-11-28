@@ -4,22 +4,25 @@ import {
   fetchEventSource,
 } from "@microsoft/fetch-event-source";
 
+import { OpenAIMessage } from "../types/OpenAIMessage";
+
 export const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_HOST;
 export const generateImage = (prompt: string) => {
   return axios.post(`${BACKEND_BASE_URL}/generate-image`, { prompt: prompt });
 };
 
 export const fetchTextMessage = async (
-  prompt: string,
+  messages: Array<OpenAIMessage>,
   onopen: (res: Response) => void,
   onmessage: (event: EventSourceMessage) => void,
   onerror: (err: any) => void,
   onclose: () => void,
 ) => {
   await fetchEventSource(`${BACKEND_BASE_URL}/generate-text`, {
+    openWhenHidden: true,
     method: "POST",
     headers: { Accept: "text/event-stream" },
-    body: JSON.stringify({ prompt: prompt }),
+    body: JSON.stringify({ messages: messages }),
     // @ts-ignore
     onopen(res) {
       onopen(res);

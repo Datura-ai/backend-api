@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Box, TextField, IconButton, MenuItem, Select } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 
@@ -16,6 +16,7 @@ const InputBar: React.FC<InputBarProps> = ({
   setMode,
 }) => {
   const [message, setMessage] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
     if (message.trim()) {
@@ -31,6 +32,12 @@ const InputBar: React.FC<InputBarProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (inputRef.current && enabled) {
+      inputRef.current.focus();
+    }
+  })
+
   return (
     <Box
       sx={{
@@ -45,7 +52,7 @@ const InputBar: React.FC<InputBarProps> = ({
       <Select
         onChange={(e) => setMode(e.target.value as "text" | "image")}
         value={mode}
-        sx={{ minWidth: "7vw" }}
+        sx={{ minWidth: "100px" }}
       >
         <MenuItem value={"text"}>Text</MenuItem>
         <MenuItem value={"image"}>Image</MenuItem>
@@ -57,6 +64,7 @@ const InputBar: React.FC<InputBarProps> = ({
         onKeyDown={handleKeyDown}
         placeholder="Type a message..."
         disabled={!enabled}
+        inputRef={inputRef}
         sx={{
           "& .MuiOutlinedInput-root": {
             "&.Mui-focused fieldset": {
