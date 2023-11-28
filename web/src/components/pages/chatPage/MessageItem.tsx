@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Avatar, Box, Skeleton, Typography } from "@mui/material";
 import Message from "../../../types/Message";
 import ImagePreview from "../../common/ImagePreview";
 
@@ -11,24 +11,40 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
   let contentElem;
   switch (message.type) {
     case "text":
+      if (message.text === "") {
+        contentElem = (
+          <div style={{ display: "flex", alignItems: "center"}}>
+            <Skeleton variant="circular" width={10} height={10} sx={{ transform: "none", marginLeft: "50px" }} />
+            <Skeleton variant="circular" width={10} height={10} sx={{ transform: "none", marginLeft: "5px", animationDelay: 0.2 }} />
+            <Skeleton variant="circular" width={10} height={10} sx={{ transform: "none", marginLeft: "5px", animationDelay: 0.4 }} />
+          </div>
+        )
+        break;
+      }
       contentElem = (
-        <Typography sx={{ wordBreak: "break-word" }}>{message.text}</Typography>
+        <Typography sx={{ wordBreak: "break-word", marginLeft: "50px" }}>{message.text}</Typography>
       );
       break;
     case "image":
-      contentElem = <ImagePreview imageUrl={message.text} />;
+      contentElem = <ImagePreview imageUrl={message.text} style={{marginLeft: "50px"}} />;
       break;
     case "image-loading":
       contentElem = (
-        <Skeleton width={"50%"} height={"40vh"} sx={{ transform: "none" }} />
+        <Skeleton width={"50%"} height={"40vh"} sx={{ transform: "none", textImarginLeftndent: "50px", marginLeft: "50px" }} />
       );
       break;
     case "text-loading":
-      contentElem = <Skeleton width={"50%"} sx={{ transform: "none" }} />;
+      contentElem = (
+        <div style={{ display: "flex", alignItems: "center"}}>
+          <Skeleton variant="circular" width={10} height={10} sx={{ transform: "none", marginLeft: "50px" }} />
+            <Skeleton variant="circular" width={10} height={10} sx={{ transform: "none", marginLeft: "5px", animationDelay: 0.2 }} />
+            <Skeleton variant="circular" width={10} height={10} sx={{ transform: "none", marginLeft: "5px", animationDelay: 0.4 }} />
+        </div>
+      )
       break;
     case "error":
       contentElem = (
-        <Typography sx={{ wordBreak: "break-word" }} color={"error"}>
+        <Typography sx={{ wordBreak: "break-word", marginLeft: "50px" }} color={"error"}>
           {message.text}
         </Typography>
       );
@@ -39,7 +55,10 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
         marginBottom: "16px",
       }}
     >
-      <Typography fontWeight={"bold"}>{message.author}</Typography>
+      <div style={{ display: "flex", alignItems: "center"}}>
+        <Avatar src={message.author === 'bot' ? "/taotensor.png" : ""} imgProps={{ style: {objectFit: 'contain'}}} sx={{ width: 40, height: 40, marginRight: "8px" }}/>
+        <Typography fontWeight={"bold"}>{message.author === 'user' ? 'You' : 'Chatbot' }</Typography>
+      </div>
       {contentElem}
     </Box>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { CSSProperties, useState } from "react";
 import {
   Button,
   Dialog,
@@ -12,9 +12,10 @@ import { Close as CloseIcon } from "@mui/icons-material";
 
 interface ImagePreviewProps {
   imageUrl: string;
+  style?: CSSProperties | undefined;
 }
 
-const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl }) => {
+const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, style }) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -26,7 +27,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl }) => {
   };
 
   return (
-    <div>
+    <div style={style}>
       <img
         src={imageUrl}
         alt="Preview"

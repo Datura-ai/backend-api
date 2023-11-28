@@ -38,11 +38,11 @@ async def get_image(prompt_dict: dict):
 async def get_text(request: Request):
     try:
         body = await request.json()
-        prompt = body.get('prompt')
+        messages = body.get('messages')
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="Cant decode JSON")
-    if not prompt:
-        raise HTTPException(status_code=400, detail="Prompt is required")
+    if not messages:
+        raise HTTPException(status_code=400, detail="Messages list is required")
 
-    return StreamingResponse(query_synapse_text(dendrite, metagraph, subtensor, prompt), media_type='text/event-stream')
+    return StreamingResponse(query_synapse_text(dendrite, metagraph, subtensor, messages), media_type='text/event-stream')
 

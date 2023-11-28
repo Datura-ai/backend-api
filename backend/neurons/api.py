@@ -44,10 +44,10 @@ async def query_synapse_image(dendrite, metagraph, subtensor, prompt):
         bt.logging.error(f"General exception at step: {e}\n{traceback.format_exc()}")
 
 
-async def query_synapse_text(dendrite, metagraph, subtensor, prompt):
+async def query_synapse_text(dendrite, metagraph, subtensor, messages):
     try:
         axon = metagraph.axons[87]
-        syn = StreamPrompting(messages=[{"role": "user", "content": prompt}], engine="gpt-4-1106-preview", seed=1234)
+        syn = StreamPrompting(messages=messages, engine="gpt-4-1106-preview", seed=1234)
 
         responses = await dendrite([axon], syn, deserialize=False, streaming=True)
         for resp in responses:
@@ -61,7 +61,7 @@ async def query_synapse_text(dendrite, metagraph, subtensor, prompt):
 
 def main():
     config, wallet, subtensor, dendrite, metagraph = initialize()
-    # asyncio.run(query_synapse_text(dendrite, metagraph, subtensor, "tell me a story"))
+    # asyncio.run(query_synapse_text(dendrite, metagraph, subtensor, [{"role": "user", "content": "tell me a story"}]))
     asyncio.run(query_synapse_image(dendrite, metagraph, subtensor, "dragon"))
 
 
