@@ -28,35 +28,16 @@ const HeaderComponent: React.FC<LayoutProps> = ({ }) => {
     }
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" sx={{ backgroundColor: 'white' }}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="#app-bar-with-responsive-menu"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        TaoTensor
-                    </Typography>
-
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             onClick={handleOpenNavMenu}
-                            color="inherit"
                         >
                             <MenuOutlined />
                         </IconButton>
@@ -86,6 +67,24 @@ const HeaderComponent: React.FC<LayoutProps> = ({ }) => {
                             </MenuItem>
                         </Menu>
                     </Box>
+                    <img src="logo.svg" alt="logo" width="100px" height="100px" />
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component="a"
+                        href="#app-bar-with-responsive-menu"
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'none', md: 'flex' },
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'black',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        TaoTensor
+                    </Typography>                    
                     <Typography
                         variant="h5"
                         noWrap
@@ -98,22 +97,22 @@ const HeaderComponent: React.FC<LayoutProps> = ({ }) => {
                             fontFamily: 'monospace',
                             fontWeight: 700,
                             letterSpacing: '.3rem',
-                            color: 'inherit',
+                            color: 'black',
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        TaoTensor
                     </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'end' } }}>
                         <Button
                             onClick={handleGoToGallery}
-                            sx={{ my: 2, color: 'white', display: 'block' }}
+                            sx={{ my: 2, color: 'black', display: 'block' }}
                         >
                             Gallery
                         </Button>
                         <Button
                             onClick={handleGoToChatbot}
-                            sx={{ my: 2, color: 'white', display: 'block' }}
+                            sx={{ my: 2, color: 'black', display: 'block' }}
                         >
                             Chatbot
                         </Button>
