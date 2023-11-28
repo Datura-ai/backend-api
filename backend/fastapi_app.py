@@ -24,22 +24,31 @@ conversations = {}
 @app.post("/generate-image")
 async def get_image(prompt_dict: dict):
     prompt = prompt_dict.get('prompt')
+    uuid = prompt_dict.get('uuid')
+
     if not prompt:
         raise HTTPException(status_code=400, detail="Prompt is required")
 
     generated_images = asyncio.run(query_synapse_image(dendrite, metagraph, subtensor, prompt))
     try:
         image_url = generated_images[0].deserialize().get("url")
+        update_conversation_image(uuid, prompt, image_url)
     except Exception:
         raise HTTPException(status_code=500, detail="Can't generate image. Please try again")
     return image_url
+
+def update_conversation_image(uuid, prompt, image_url):
+    if uuid not in conversations:
+        conversations[uuid] = {'messages': []}
+
+    conversations[uuid]['messages'].append({"prompt": prompt, "text": image_url})
 
 def create_conversation_string(uuid):
     if uuid not in conversations or 'messages' not in conversations[uuid]:
         return None
 
     # Concatenate all prompts and answers into a single text
-    conversation_text = ' '.join([f"prompt: {message['prompt']}\n answer: {message['answer']}" for message in conversations[uuid]['messages']])
+    conversation_text = ' '.join([f"prompt: {message['prompt']}\n answer: {message.get('answer', '')}" for message in conversations[uuid]['messages']])
     return conversation_text
 
 def create_summary_prompt(uuid):
@@ -122,9 +131,19 @@ async def get_conversation(uuid: str):
         for message in conversations[uuid]['messages']:
             # Transform each message into two entries
             user_message = {'author': 'user', 'text': message['prompt'], 'type': 'text'}
-            bot_message = {'author': 'bot', 'text': message['answer'], 'type': 'text'}
+
+            if 'answer' in message:
+                bot_message = {'author': 'bot', 'text': message['answer'], 'type': 'text'}
+
+            elif 'text' in message:
+                bot_message = {'author': 'bot', 'text': message['text'], 'type': 'image'}
+
             transformed_messages.extend([user_message, bot_message])
 
         return JSONResponse(content={"messages": transformed_messages})
     else:
         raise HTTPException(status_code=404, detail="Conversation not found")
+    
+@app.get("/conversations")
+async def get_conversations():
+    return JSONResponse(content={"conversations": conversations})
