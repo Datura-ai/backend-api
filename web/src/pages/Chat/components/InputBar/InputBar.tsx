@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, TextField, IconButton, MenuItem, Select } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import { useInputBar } from "./useInputBar";
 
 interface InputBarProps {
   onSendMessage: (message: string) => void;
@@ -15,21 +16,9 @@ const InputBar: React.FC<InputBarProps> = ({
   mode,
   setMode,
 }) => {
-  const [message, setMessage] = useState("");
-
-  const handleSend = () => {
-    if (message.trim()) {
-      onSendMessage(message.trim());
-      setMessage("");
-    }
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      handleSend();
-    }
-  };
+  const { handleSend, handleKeyDown, message, setMessage } = useInputBar({
+    onSendMessage,
+  });
 
   return (
     <Box
@@ -58,6 +47,7 @@ const InputBar: React.FC<InputBarProps> = ({
         placeholder="Type a message..."
         disabled={!enabled}
         sx={{
+          fontFamily: "Fira Code",
           "& .MuiOutlinedInput-root": {
             "&.Mui-focused fieldset": {
               borderColor: "initial",

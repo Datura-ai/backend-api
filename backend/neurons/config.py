@@ -2,7 +2,6 @@ import bittensor as bt
 import argparse
 import os
 
-
 def check_config(cls, config: "bt.Config"):
     bt.axon.check_config(config)
     bt.logging.check_config(config)
@@ -17,7 +16,6 @@ def check_config(cls, config: "bt.Config"):
     config.miner.full_path = os.path.expanduser(full_path)
     if not os.path.exists(config.miner.full_path):
         os.makedirs(config.miner.full_path)
-
 
 def get_config() -> "bt.Config":
     parser = argparse.ArgumentParser()

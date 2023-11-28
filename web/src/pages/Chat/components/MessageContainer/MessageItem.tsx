@@ -1,7 +1,10 @@
 import React from "react";
 import { Box, Skeleton, Typography } from "@mui/material";
-import Message from "../../../types/Message";
-import ImagePreview from "../../common/ImagePreview";
+import Message from "../../../../types/Message";
+import ImagePreview from "../../../../components/ImagePreview/ImagePreview";
+import AvatarGenerator from "../../../../components/Avatar/AvatarGenerator";
+
+import styles from "./messageStyles.module.css";
 
 interface MessageItemProps {
   message: Message;
@@ -11,9 +14,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
   let contentElem;
   switch (message.type) {
     case "text":
-      contentElem = (
-        <Typography sx={{ wordBreak: "break-word" }}>{message.text}</Typography>
-      );
+      contentElem = <>{message.text}</>;
       break;
     case "image":
       contentElem = <ImagePreview imageUrl={message.text} />;
@@ -33,14 +34,22 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
         </Typography>
       );
   }
+  
   return (
     <Box
       sx={{
         marginBottom: "16px",
       }}
     >
-      <Typography fontWeight={"bold"}>{message.author}</Typography>
-      {contentElem}
+      <div className={styles.message}>
+        <div className={styles.avatar}>
+          <AvatarGenerator name={message.author} size={30} />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span className={styles.name}>{message.author}</span>
+          <span className={styles.text}>{contentElem}</span>
+        </div>
+      </div>
     </Box>
   );
 };

@@ -1,24 +1,15 @@
 import os
-import re
-import json
-import math
 import time
-import torch
 import wandb
 import random
-import string
 import asyncio
 import template
-import requests
 import argparse
 import datetime
 import traceback
 import bittensor as bt
-import concurrent.futures
-from PIL import Image
 from io import BytesIO
 from openai import AsyncOpenAI
-from typing import List, Optional
 from template.protocol import StreamPrompting, IsAlive, ImageResponse
 
 AsyncOpenAI.api_key = os.environ.get('OPENAI_API_KEY')

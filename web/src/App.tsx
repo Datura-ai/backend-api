@@ -1,11 +1,15 @@
 import React from "react";
-import ChatPage from "./components/pages/chatPage/ChatPage";
+
+import "./App.css";
+
+import Layout from "./components/Layout";
+import ChatPage from "./pages/Chat";
 
 function App() {
   return (
-    <div>
+    <Layout>
       <ChatPage />
-    </div>
+    </Layout>
   );
 }
 

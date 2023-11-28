@@ -1,37 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
-import Message from "../../../types/Message";
+import React from "react";
+import Message from "../../../../types/Message";
 import MessageItem from "./MessageItem";
 import { Box, IconButton } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { useMessageContainer } from "./useMessageContainer";
 
 interface MessagesContainerProps {
   messages: Message[];
 }
 const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages }) => {
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [showScrollButton, setShowScrollButton] = useState(false);
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-    }
-  };
+  const { messagesEndRef, handleScroll, showScrollButton, scrollToBottom } =
+    useMessageContainer({ messages });
 
-  const handleScroll = () => {
-    if (!messagesEndRef.current) return;
-
-    const isAtBottom =
-      messagesEndRef.current.scrollHeight - messagesEndRef.current.scrollTop ===
-      messagesEndRef.current.clientHeight;
-    setShowScrollButton(!isAtBottom);
-  };
-
-  useEffect(scrollToBottom, [messages]);
   return (
     <Box
       ref={messagesEndRef}
       onScroll={handleScroll}
       sx={{
-        height: `85vh`,
+        height: `calc(100% - 110px)`,
         overflowY: "auto",
         padding: "16px",
       }}

@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Box } from "@mui/material";
-import MessagesContainer from "./MessagesContainer";
-import Message from "../../../types/Message";
-import InputBar from "./InputBar";
-import { fetchTextMessage, generateImage } from "../../../services/api";
+import { useEffect, useState } from "react";
+
+import Message from "../../../../types/Message";
+
+import { fetchTextMessage, generateImage } from "../../../../services/api";
 import { EventSourceMessage } from "@microsoft/fetch-event-source";
 
-const ChatWindow: React.FC = () => {
+export const useChatWindow = () => {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [mode, setMode] = useState<"image" | "text">("text");
   const [inputEnabled, setInputEnabled] = useState<boolean>(true);
 
-  const handleSendMessage = (newMessage: string) => {
+  const handleSendMessage = async (newMessage: string) => {
     setMessages((prevState) => [
       ...prevState,
       { author: "user", text: newMessage, type: "text" },
@@ -34,26 +33,24 @@ const ChatWindow: React.FC = () => {
           { author: "bot", text: "", type: "image-loading" },
         ]);
         setInputEnabled(false);
-        generateImage(newMessage)
-          .then((data) => {
-            setMessages((prevState) => [
-              ...prevState.slice(0, -1),
-              { author: "bot", text: data.data, type: "image" },
-            ]);
-          })
-          .catch(() => {
-            setMessages((prevState) => [
-              ...prevState.slice(0, -1),
-              {
-                author: "bot",
-                text: "Can't generate image. Please try again",
-                type: "error",
-              },
-            ]);
-          })
-          .finally(() => {
-            setInputEnabled(true);
-          });
+        try {
+          const data = await generateImage(newMessage);
+          setMessages((prevState) => [
+            ...prevState.slice(0, -1),
+            { author: "bot", text: data.data, type: "image" },
+          ]);
+        } catch (error) {
+          setMessages((prevState) => [
+            ...prevState.slice(0, -1),
+            {
+              author: "bot",
+              text: "Can't generate image. Please try again",
+              type: "error",
+            },
+          ]);
+        } finally {
+          setInputEnabled(true);
+        }
         break;
     }
   };
@@ -128,22 +125,10 @@ const ChatWindow: React.FC = () => {
         onopen,
         onmessage,
         onerror,
-        onclose,
+        onclose
       ).catch(() => setInputEnabled(true));
     }
   }, [messages]);
 
-  return (
-    <Box sx={{ height: "100vh", overflowY: "auto", position: "relative" }}>
-      <MessagesContainer messages={messages} />
-      <InputBar
-        onSendMessage={handleSendMessage}
-        enabled={inputEnabled}
-        mode={mode}
-        setMode={setMode}
-      />
-    </Box>
-  );
+  return { messages, handleSendMessage, inputEnabled, mode, setMode };
 };
-
-export default ChatWindow;
