@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
-import Message from "../../../types/Message";
-import MessageItem from "./MessageItem";
-import { Box, IconButton } from "@mui/material";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import React, { useEffect, useRef, useState } from 'react';
+import Message from '../../../types/Message';
+import MessageItem from './MessageItem';
+import { Box, IconButton } from '@mui/material';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 interface MessagesContainerProps {
   messages: Message[];
@@ -31,20 +31,24 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages }) => {
       ref={messagesEndRef}
       onScroll={handleScroll}
       sx={{
-        height: `85vh`,
-        overflowY: "auto",
-        padding: "16px",
+        height: `77vh`,
+        overflowY: 'auto',
+        padding: '16px',
       }}
     >
-      <Box sx={{ overflow: "auto", flexGrow: 1, padding: "10px" }}>
+      <Box sx={{ overflow: 'auto', flexGrow: 1, padding: '10px' }}>
         {messages.map((message, index) => (
-          <MessageItem key={index} message={message} />
+          <MessageItem
+            key={index}
+            message={message}
+            isUserMessage={message?.author === 'user'}
+          />
         ))}
       </Box>
       {showScrollButton && (
         <IconButton
           onClick={scrollToBottom}
-          sx={{ position: "sticky", bottom: 0, left: "50%" }}
+          sx={{ position: 'sticky', bottom: 0, left: '50%' }}
         >
           <ArrowDownwardIcon />
         </IconButton>
