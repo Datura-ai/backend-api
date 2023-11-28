@@ -16,7 +16,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
       );
       break;
     case "image":
-      contentElem = <ImagePreview imageUrl={message.text} />;
+      contentElem = <img src={message.text} alt="Preview" className="shadow-2xl rounded max-w-full h-auto align-middle border-white" />;
       break;
     case "image-loading":
       contentElem = (
@@ -34,7 +34,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
       );
   }
   return (
-    <div className={` ${message.author === 'bot' ? 'bg-slate-100' : ''}`}>
+    <div className={` ${message.author === 'user' ? 'bg-slate-100' : ''}`}>
       <div className="flex flex-col items-start w-full justify-stretch mb-10 p-2 pb-12">
         <div className="flex items-center my-2">
           <div>
