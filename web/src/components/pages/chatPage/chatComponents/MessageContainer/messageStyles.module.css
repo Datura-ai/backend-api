@@ -1,0 +1,17 @@
+.message {
+  display: flex;
+  gap: 5px;
+}
+
+.avatar {
+  margin-top: 4px;
+}
+
+.name {
+  font-family: "Fira Code", monospace !important;
+  font-weight: 500;
+}
+
+.text {
+  font-size: 14px;
+}
