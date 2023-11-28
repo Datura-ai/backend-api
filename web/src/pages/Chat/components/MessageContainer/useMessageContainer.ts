@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import Message from "../../../../../types/Message";
+import Message from "../../../../types/Message";
 
 export const useMessageContainer = ({ messages }: { messages: Message[] }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
