@@ -1,10 +1,8 @@
 import pydantic
 import bittensor as bt
 import typing
-from abc import ABC, abstractmethod
-from typing import List, Union, Callable, Awaitable, Dict, Optional
+from typing import List, Dict, Optional
 from starlette.responses import StreamingResponse
-from pydantic import BaseModel, Field
 
 class IsAlive( bt.Synapse ):   
     answer: typing.Optional[ str ] = None

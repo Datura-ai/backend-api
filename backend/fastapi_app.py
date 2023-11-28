@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from neurons.conversation_history import ConversationHistory
 from routes.chat import router as chat_router
 
 app = FastAPI()
