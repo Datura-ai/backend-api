@@ -27,13 +27,24 @@ api = wandb.Api()
 
 # Access the run
 
-def get_run_images():
+def get_run_images(sortBy):
+    # for run in runs:
+        # if(run._attrs['state'] == 'finished'):
+        #     print(run._attrs['name'])
     run = api.run("/cortex-t/synthetic-QA/runs/amczp753")
     images = []
+    hotkey = run.config['wallet']['hotkey']
     for file in run.files():
         if file.name.endswith(".png") or file.name.endswith(".jpg"):
-            # print(file)
-            images.append(file.name)
+            attrs = file._attrs
+            attrs['hotkey'] = hotkey
+            images.append(attrs)
+    if(sortBy == 'recent'):
+        images.sort(key=lambda x: x['updatedAt'], reverse=True)
+    if(sortBy == 'hotkey'):
+        images.sort(key=lambda x: x['hotkey'])
+    if(sortBy == 'uid'):
+        images.sort(key=lambda x: x['id'])
     return images            
 
 

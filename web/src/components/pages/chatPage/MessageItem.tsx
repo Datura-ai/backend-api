@@ -36,10 +36,10 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
   return (
     <Box
       sx={{
-        marginBottom: "16px",
+        margin: "16px",
       }}
     >
-      <Typography fontWeight={"bold"}>{message.author}</Typography>
+      <Typography fontWeight={"bold"} fontSize={18}>{message.author}</Typography>
       {contentElem}
     </Box>
   );

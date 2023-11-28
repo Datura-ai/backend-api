@@ -20,7 +20,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages }) => {
     if (!messagesEndRef.current) return;
 
     const isAtBottom =
-      messagesEndRef.current.scrollHeight - messagesEndRef.current.scrollTop ===
+      messagesEndRef.current.scrollHeight - messagesEndRef.current.scrollTop <=
       messagesEndRef.current.clientHeight;
     setShowScrollButton(!isAtBottom);
   };
@@ -31,9 +31,8 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages }) => {
       ref={messagesEndRef}
       onScroll={handleScroll}
       sx={{
-        height: `85vh`,
+        height: `calc(100vh - 160px)`,
         overflowY: "auto",
-        padding: "16px",
       }}
     >
       <Box sx={{ overflow: "auto", flexGrow: 1, padding: "10px" }}>
@@ -44,7 +43,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages }) => {
       {showScrollButton && (
         <IconButton
           onClick={scrollToBottom}
-          sx={{ position: "sticky", bottom: 0, left: "50%" }}
+          sx={{ position: "sticky", bottom: '0', left: "50%" }}
         >
           <ArrowDownwardIcon />
         </IconButton>
