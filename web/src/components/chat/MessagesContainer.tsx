@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import Message from "../../../types/Message";
+import { Message } from "../../types/Message";
 import MessageItem from "./MessageItem";
 import { Box, IconButton } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
@@ -30,13 +30,13 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages }) => {
     <Box
       ref={messagesEndRef}
       onScroll={handleScroll}
+      className='message-container'
       sx={{
-        height: `85vh`,
+        height: "100%",
         overflowY: "auto",
-        padding: "16px",
       }}
     >
-      <Box sx={{ overflow: "auto", flexGrow: 1, padding: "10px" }}>
+      <Box>
         {messages.map((message, index) => (
           <MessageItem key={index} message={message} />
         ))}
@@ -44,7 +44,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages }) => {
       {showScrollButton && (
         <IconButton
           onClick={scrollToBottom}
-          sx={{ position: "sticky", bottom: 0, left: "50%" }}
+          // sx={{ position: "sticky", bottom: 0, left: "50%" }}
         >
           <ArrowDownwardIcon />
         </IconButton>

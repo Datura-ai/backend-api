@@ -32,12 +32,13 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl }) => {
         alt="Preview"
         onClick={handleOpen}
         style={{
+          width: "100%",
           cursor: "pointer",
           maxHeight: "40vh",
           objectFit: "scale-down",
         }}
       />
-      <Dialog open={open} onClose={handleClose} maxWidth="md">
+      <Dialog open={open} onClose={handleClose} maxWidth="md" sx={{zIndex: "200000"}}>
         <DialogTitle>
           <IconButton
             edge="end"

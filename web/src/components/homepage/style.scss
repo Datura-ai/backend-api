@@ -1,0 +1,35 @@
+.image-list-element {
+  position: relative;
+  overflow: hidden;
+
+  @media (pointer: fine) {
+    &:hover {
+      & .image-list-element-menu {
+        z-index: 10000;
+
+        box-shadow: rgba(255, 255, 255, 0.4) 0rem -4rem 1.5rem -1.5rem inset;
+        opacity: 1;
+        transition: 0.5s;
+      }
+    }
+
+    .image-list-element-menu {
+      width: 100%;
+      height: 4rem;
+      opacity: 0;
+      bottom: 0;
+      position: absolute;
+      transition: 0.3s;
+
+      display: flex;
+      align-items: end;
+      justify-content: end;
+      padding-right: 0.5rem;
+
+      button {
+        position: relative;
+        color: rgba(0, 0, 0, 1);
+      }
+    }
+  }
+}

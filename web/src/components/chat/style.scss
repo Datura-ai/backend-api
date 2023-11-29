@@ -1,0 +1,62 @@
+.chat-window {
+  height: 100%;
+
+  .container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("../../images/bg-chat.jpg");
+    background-size: cover;
+  }
+
+  .message-container {
+    position: relative;
+    z-index: 100000;
+    .message-item {
+      background-color: white;
+      position: relative;
+      z-index: 10000;
+      width: fit-content;
+      word-break: break-word;
+      box-shadow: 0 0 0.3rem 0.1rem rgba(0, 0, 0, 0.3);
+      margin: 0.5rem 1.5rem;
+      max-width: 30%;
+
+      padding: 0.7rem 2rem;
+
+      &.query {
+        border-radius: 2rem 2rem 2rem 0;
+      }
+
+      &.answer {
+        border-radius: 2rem 2rem 0 2rem;
+        margin-left: auto;
+      }
+
+      .author + * {
+        margin-top: 0.3rem;
+        margin-left: 0.5rem;
+      }
+    }
+  }
+}
+
+.input-bar {
+  z-index: 10;
+  margin-bottom: 1rem;
+  background-color: rgba(50, 50, 50, 0.3);
+  border-radius: 2rem;
+
+  .input-bar-select {
+    border-radius: 1.5rem;
+    background-color: white;
+  }
+}

@@ -1,0 +1,40 @@
+.common-menu-list {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  justify-content: center;
+  width: 100%;
+
+  .common-menu-list-item {
+    font-weight: bold;
+    width: fit-content;
+    display: inline-block;
+
+    a {
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:visited {
+      color: black;
+    }
+  }
+}
+
+header.common-header {
+  box-shadow: none;
+  background-color: white;
+  flex-direction: row;
+  height: 4rem;
+  box-shadow: 0 0 0.5rem 0.1rem rgba(0, 0, 0, 0.4);
+
+  img {
+    width: 6.5rem;
+    height: 6.5rem;
+    position: absolute;
+    top: -1rem;
+  }
+}
