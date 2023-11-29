@@ -9,6 +9,19 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-    command: uvicorn fastapi_app:app --host 0.0.0.0
+    command: uvicorn fastapi_app:app --host 0.0.0.0 --reload
     deploy:
       replicas: 1
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
