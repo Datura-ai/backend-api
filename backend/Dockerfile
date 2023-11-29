@@ -1,6 +1,9 @@
 FROM python:3.10
-ENV PYTHONBUFFERED=1
-COPY /.bittensor /root/.bittensor
+ENV PYTHONUNBUFFERED=1
 WORKDIR /app
+
+COPY /.bittensor /root/.bittensor
+COPY /requirements.txt /root/requirements.txt
+RUN pip3 install -r /root/requirements.txt
+
 COPY . .
-RUN pip3 install -r requirements.txt

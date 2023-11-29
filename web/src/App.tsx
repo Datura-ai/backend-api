@@ -1,12 +1,25 @@
-import React from "react";
-import ChatPage from "./components/pages/chatPage/ChatPage";
+import React from 'react';
+import {BrowserRouter} from 'react-router-dom';
+import Router from "./components/navigation/Router";
+import Navigator from "./components/navigation/Navigator";
+import {Provider} from "react-redux";
+import configureStore from "./store/ConfigureStore";
 
-function App() {
-  return (
-    <div>
-      <ChatPage />
-    </div>
-  );
+const store = configureStore();
+
+
+const App: React.FC = () => {
+    return (
+        <Provider store={store}>
+            <BrowserRouter>
+                <div>
+                    <Navigator/>
+                    <Router/>
+                </div>
+            </BrowserRouter>
+        </Provider>
+
+    );
 }
 
 export default App;

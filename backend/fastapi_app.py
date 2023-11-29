@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
+from clients.wandb.wandb_client import WandbClient, ImageData
 from neurons.api import initialize, query_synapse_image, query_synapse_text
 
 app = FastAPI()
@@ -18,6 +19,7 @@ app.add_middleware(
 )
 
 _, _, subtensor, dendrite, metagraph = initialize()
+wandb_client = WandbClient(run_path="/cortex-t/synthetic-QA/runs/amczp753")
 
 
 @app.post("/generate-image")
@@ -46,3 +48,7 @@ async def get_text(request: Request):
 
     return StreamingResponse(query_synapse_text(dendrite, metagraph, subtensor, prompt), media_type='text/event-stream')
 
+
+@app.get("/images", response_model=list[ImageData])
+async def get_images():
+    return wandb_client.get_images_data()
