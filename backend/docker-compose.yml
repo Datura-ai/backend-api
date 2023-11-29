@@ -9,7 +9,7 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-    command: uvicorn fastapi_app:app --host 0.0.0.0 --reload
+    command: uvicorn fastapi_app:app --host 0.0.0.0
     deploy:
       replicas: 1
     depends_on:
