@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Skeleton, Typography } from "@mui/material";
-import Message from "../../../types/Message";
-import ImagePreview from "../../common/ImagePreview";
+import Message from "src/types/Message";
+import ImagePreview from "src/components/common/ImagePreview";
 
 interface MessageItemProps {
   message: Message;

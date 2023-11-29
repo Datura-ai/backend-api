@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import MessagesContainer from "./MessagesContainer";
-import Message from "../../../types/Message";
+import Message from "src/types/Message";
 import InputBar from "./InputBar";
-import { fetchTextMessage, generateImage } from "../../../services/api";
+import { fetchTextMessage, generateImage } from "src/services/api"
 import { EventSourceMessage } from "@microsoft/fetch-event-source";
+import ChatSideBar from "./ChatSideBar";
 
 const ChatWindow: React.FC = () => {
   const [messages, setMessages] = useState<Array<Message>>([]);
@@ -134,15 +135,23 @@ const ChatWindow: React.FC = () => {
   }, [messages]);
 
   return (
-    <Box sx={{ height: "100vh", overflowY: "auto", position: "relative" }}>
-      <MessagesContainer messages={messages} />
-      <InputBar
-        onSendMessage={handleSendMessage}
-        enabled={inputEnabled}
-        mode={mode}
-        setMode={setMode}
-      />
-    </Box>
+    <div className="flex h-full">
+      <div className="w-1/5 bg-gray-200">
+        <ChatSideBar />
+      </div>
+      <div className="flex-grow px-8 ">
+        <Box sx={{ height: "100vh", overflowY: "auto", position: "relative" }}>
+          <MessagesContainer messages={messages} />
+          <InputBar
+            onSendMessage={handleSendMessage}
+            enabled={inputEnabled}
+            mode={mode}
+            setMode={setMode}
+          />
+        </Box>
+      </div>
+    </div>
+    
   );
 };
 
