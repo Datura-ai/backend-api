@@ -1,8 +1,9 @@
-import bittensor as bt
 import argparse
-import traceback
 import asyncio
-from template.protocol import StreamPrompting, ImageResponse
+import traceback
+
+import bittensor as bt
+from template.protocol import ImageResponse, StreamPrompting
 
 
 def initialize():
@@ -20,6 +21,7 @@ def initialize():
 
 # axons = [36, 80, 255]
 
+
 async def query_synapse_image(dendrite, metagraph, subtensor, prompt):
     try:
         axon = metagraph.axons[87]  # 87, 91, 98
@@ -28,10 +30,18 @@ async def query_synapse_image(dendrite, metagraph, subtensor, prompt):
         quality = "standard"
         style = "vivid"
 
-        syn = ImageResponse(messages=prompt, engine=engine, size=size, quality=quality, style=style)
+        syn = ImageResponse(
+            messages=prompt,
+            engine=engine,
+            size=size,
+            quality=quality,
+            style=style,
+        )
 
         async def main():
-            responses = await dendrite([axon], syn, deserialize=False, timeout=50)
+            responses = await dendrite(
+                [axon], syn, deserialize=False, timeout=50
+            )
             full_response = []  # Initialize full_response
             for resp in responses:
                 full_response.append(resp)
@@ -41,27 +51,39 @@ async def query_synapse_image(dendrite, metagraph, subtensor, prompt):
         full_response = await main()
         return full_response
     except Exception as e:
-        bt.logging.error(f"General exception at step: {e}\n{traceback.format_exc()}")
+        bt.logging.error(
+            f"General exception at step: {e}\n{traceback.format_exc()}"
+        )
 
 
 async def query_synapse_text(dendrite, metagraph, subtensor, prompt):
     try:
         axon = metagraph.axons[87]
-        syn = StreamPrompting(messages=[{"role": "user", "content": prompt}], engine="gpt-4-1106-preview", seed=1234)
+        syn = StreamPrompting(
+            messages=[{"role": "user", "content": prompt}],
+            engine="gpt-4-1106-preview",
+            seed=1234,
+        )
 
-        responses = await dendrite([axon], syn, deserialize=False, streaming=True)
+        responses = await dendrite(
+            [axon], syn, deserialize=False, streaming=True
+        )
         for resp in responses:
             async for chunk in resp:
                 if isinstance(chunk, list):
                     yield f"data: {chunk[0]}\n\n"
 
     except Exception as e:
-        bt.logging.error(f"General exception at step: {e}\n{traceback.format_exc()}")
+        bt.logging.error(
+            f"General exception at step: {e}\n{traceback.format_exc()}"
+        )
 
 
 def main():
     config, wallet, subtensor, dendrite, metagraph = initialize()
-    # asyncio.run(query_synapse_text(dendrite, metagraph, subtensor, "tell me a story"))
+    # asyncio.run(
+    #   query_synapse_text(dendrite, metagraph, subtensor, "tell me a story")
+    # )
     asyncio.run(query_synapse_image(dendrite, metagraph, subtensor, "dragon"))
 
 

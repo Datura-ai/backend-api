@@ -1,6 +1,7 @@
-import bittensor as bt
 import argparse
 import os
+
+import bittensor as bt
 
 
 def check_config(cls, config: "bt.Config"):
@@ -37,18 +38,26 @@ def get_config() -> "bt.Config":
         help="Chain endpoint to connect to.",
     )
     # Adds override arguments for network and netuid.
-    parser.add_argument("--netuid", type=int, default=1, help="The chain subnet uid.")
+    parser.add_argument(
+        "--netuid", type=int, default=1, help="The chain subnet uid."
+    )
 
     parser.add_argument(
         "--miner.root",
         type=str,
-        help="Trials for this miner go in miner.root / (wallet_cold - wallet_hot) / miner.name ",
+        help=(
+            "Trials for this miner go in "
+            "miner.root / (wallet_cold - wallet_hot) / miner.name"
+        ),
         default="~/.bittensor/miners/",
     )
     parser.add_argument(
         "--miner.name",
         type=str,
-        help="Trials for this miner go in miner.root / (wallet_cold - wallet_hot) / miner.name ",
+        help=(
+            "Trials for this miner go in "
+            "miner.root / (wallet_cold - wallet_hot) / miner.name"
+        ),
         default="Bittensor Miner",
     )
 
@@ -88,13 +97,16 @@ def get_config() -> "bt.Config":
         default=False,
     )
 
-    # Adds subtensor specific arguments i.e. --subtensor.chain_endpoint ... --subtensor.network ...
+    # Adds subtensor specific arguments
+    # i.e. --subtensor.chain_endpoint ... --subtensor.network ...
     bt.subtensor.add_args(parser)
 
-    # Adds logging specific arguments i.e. --logging.debug ..., --logging.trace .. or --logging.logging_dir ...
+    # Adds logging specific arguments
+    # i.e. --logging.debug ..., --logging.trace .. or --logging.logging_dir ...
     bt.logging.add_args(parser)
 
-    # Adds wallet specific arguments i.e. --wallet.name ..., --wallet.hotkey ./. or --wallet.path ...
+    # Adds wallet specific arguments
+    # i.e. --wallet.name ..., --wallet.hotkey ./. or --wallet.path ...
     bt.wallet.add_args(parser)
 
     # Adds axon specific arguments i.e. --axon.port ...

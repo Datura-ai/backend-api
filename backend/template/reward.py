@@ -11,28 +11,26 @@
 # The above copyright notice and this permission notice shall be included in all copies or substantial portions of
 # the Software.
 
+import asyncio
+
 # THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
 # THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 # THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
-import logging
-from transformers import logging as hf_logging
-hf_logging.set_verbosity_error()
-import typing
-import openai
+import io
+import re
+
 import aiohttp
 import bittensor as bt
-import difflib
-from sklearn.feature_extraction.text import TfidfVectorizer
-import asyncio
-from sklearn.metrics.pairwise import cosine_similarity
 import torch
-from transformers import CLIPProcessor, CLIPModel
 from PIL import Image
-import io
-import requests
-import re
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from transformers import CLIPModel, CLIPProcessor, logging as hf_logging
+
+hf_logging.set_verbosity_error()
+
 
 # ==== TEXT ====
 def calculate_text_similarity(text1, text2):
@@ -47,12 +45,18 @@ def calculate_text_similarity(text1, text2):
 
     return similarity
 
-async def openai_score(openai_answer: str, response: str, weight: float) -> float:
+
+async def openai_score(
+    openai_answer: str, response: str, weight: float
+) -> float:
     loop = asyncio.get_running_loop()
-    similarity = await loop.run_in_executor(None, calculate_text_similarity, openai_answer, response)
+    similarity = await loop.run_in_executor(
+        None, calculate_text_similarity, openai_answer, response
+    )
     bt.logging.info(f"similarity is {similarity}")
 
-    return weight if similarity > .75 else 0
+    return weight if similarity > 0.75 else 0
+
 
 # ==== IMAGES =====
 # Load the CLIP model and processor
@@ -61,33 +65,36 @@ processor = CLIPProcessor.from_pretrained("openai/clip-vit-large-patch14")
 
 # Could also verify the date from the url
 url_regex = (
-    r'https://oaidalleapiprodscus\.blob\.core\.windows\.net/private/org-[\w-]+/'
-    r'user-[\w-]+/img-[\w-]+\.(?:png|jpg)\?'
-    r'st=\d{4}-\d{2}-\d{2}T\d{2}%3A\d{2}%3A\d{2}Z&'
-    r'se=\d{4}-\d{2}-\d{2}T\d{2}%3A\d{2}%3A\d{2}Z&'
-    r'(?:sp=\w+&)?'
-    r'sv=\d{4}-\d{2}-\d{2}&'
-    r'sr=\w+&'
-    r'rscd=\w+&'
-    r'rsct=\w+/[\w-]+&'
-    r'skoid=[\w-]+&'
-    r'sktid=[\w-]+&'
-    r'skt=\d{4}-\d{2}-\d{2}T\d{2}%3A\d{2}%3A\d{2}Z&'
-    r'ske=\d{4}-\d{2}-\d{2}T\d{2}%3A\d{2}%3A\d{2}Z&'
-    r'sks=\w+&'
-    r'skv=\d{4}-\d{2}-\d{2}&'
-    r'sig=[\w/%+=]+'
+    r"https://oaidalleapiprodscus\.blob\.core\.windows\.net/private/org-[\w-]+/"  # NOQA
+    r"user-[\w-]+/img-[\w-]+\.(?:png|jpg)\?"
+    r"st=\d{4}-\d{2}-\d{2}T\d{2}%3A\d{2}%3A\d{2}Z&"
+    r"se=\d{4}-\d{2}-\d{2}T\d{2}%3A\d{2}%3A\d{2}Z&"
+    r"(?:sp=\w+&)?"
+    r"sv=\d{4}-\d{2}-\d{2}&"
+    r"sr=\w+&"
+    r"rscd=\w+&"
+    r"rsct=\w+/[\w-]+&"
+    r"skoid=[\w-]+&"
+    r"sktid=[\w-]+&"
+    r"skt=\d{4}-\d{2}-\d{2}T\d{2}%3A\d{2}%3A\d{2}Z&"
+    r"ske=\d{4}-\d{2}-\d{2}T\d{2}%3A\d{2}%3A\d{2}Z&"
+    r"sks=\w+&"
+    r"skv=\d{4}-\d{2}-\d{2}&"
+    r"sig=[\w/%+=]+"
 )
+
 
 async def is_image_url(url):
     """Check if the URL points to an image asynchronously."""
     try:
         async with aiohttp.ClientSession() as session:
             async with session.head(url) as response:
-                return response.status == 200 and 'image' in response.headers.get('Content-Type', '')
+                content_type = response.headers.get("Content-Type", "")
+                return response.status == 200 and "image" in content_type
     except Exception as e:
         bt.logging.info(f"Error checking URL: {e}")
         return False
+
 
 async def load_image_from_url(url):
     """Load an image from a URL asynchronously."""
@@ -103,25 +110,46 @@ async def load_image_from_url(url):
         bt.logging.info(f"Failed to load image: {e}")
         return None
 
+
 def get_image_size(image):
     """Get the size of an image."""
     return image.size  # Returns a tuple (width, height)
 
+
 def calculate_image_similarity(image, description, max_length=77):
     """Calculate the cosine similarity between a description and an image."""
     # Truncate the description
-    inputs = processor(text=description, images=None, return_tensors="pt", padding=True, truncation=True, max_length=max_length)
+    inputs = processor(
+        text=description,
+        images=None,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=max_length,
+    )
     text_embedding = model.get_text_features(**inputs)
 
     # Process the image
-    inputs = processor(text=None, images=image, return_tensors="pt", padding=True, truncation=True)
+    inputs = processor(
+        text=None,
+        images=image,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+    )
     image_embedding = model.get_image_features(**inputs)
 
     # Calculate cosine similarity
-    return torch.cosine_similarity(image_embedding, text_embedding, dim=1).item()
+    return torch.cosine_similarity(
+        image_embedding, text_embedding, dim=1
+    ).item()
 
-async def image_score(uid, url, desired_size, description, weight, similarity_threshold=0.24):
-    """Calculate the image score based on similarity and size asynchronously."""
+
+async def image_score(
+    uid, url, desired_size, description, weight, similarity_threshold=0.24
+):
+    """Calculate the image score based on similarity
+    and size asynchronously."""
 
     if not re.match(url_regex, url):
         bt.logging.info(f"UID {uid} URL does not match the expected format.")
@@ -139,17 +167,27 @@ async def image_score(uid, url, desired_size, description, weight, similarity_th
     size = get_image_size(image)
     size_str = f"{size[0]}x{size[1]}"
     if desired_size != size_str:
-        bt.logging.info(f"UID {uid} size does not match: {size_str} != {desired_size} ")
+        bt.logging.info(
+            f"UID {uid} size does not match: {size_str} != {desired_size} "
+        )
 
     try:
-        similarity = await asyncio.to_thread(calculate_image_similarity, image, description)
+        similarity = await asyncio.to_thread(
+            calculate_image_similarity, image, description
+        )
         if similarity > similarity_threshold:
-            bt.logging.info(f"UID {uid} passed similarity test with score of: {round(similarity, 5)}. Score = {weight}")
+            bt.logging.info(
+                f"UID {uid} passed similarity test with score of: "
+                f"{round(similarity, 5)}. Score = {weight}"
+            )
             return weight
 
-        else: 
-             bt.logging.info(f"UID {uid} failed similary test with score of: {round(similarity, 5)}. Score = {0}")
-             return 0
+        else:
+            bt.logging.info(
+                f"UID {uid} failed similary test with score of: "
+                f"{round(similarity, 5)}. Score = {0}"
+            )
+            return 0
     except Exception as e:
         bt.logging.info(f"Error in image scoring for UID {uid}: {e}")
         return 0

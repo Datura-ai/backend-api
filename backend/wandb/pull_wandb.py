@@ -14,8 +14,9 @@
 
 # print("History has been saved to run_history.json")
 
-import wandb
 import os
+
+import wandb
 
 # Replace with your run path "entity/project/run_id"
 run_path = "entity/project/run_id"
