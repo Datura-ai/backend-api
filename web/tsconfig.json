@@ -18,9 +18,34 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "./",
+    "paths": {
+      "@public/*": ["public/*"],
+      "@components/*": ["src/components/*"],
+      "@components": ["src/components"],
+      "@types/*": ["web/src/types/*"],
+      "@types": ["web/src/types"],
+      "@services/*": ["src/services/*"],
+      "@services": ["src/services"],
+      "@pages/*": ["src/pages/*"],
+      "@pages": ["src/pages"],
+      "@utils/*": ["src/utils/*"],
+      "@utils": ["src/utils"],
+      "@views/*": ["src/views/*"],
+      "@views": ["src/views"],
+      "@widgets/*": ["src/widgets/*"],
+      "@widgets": ["src/widgets"],
+      "@hooks/*": ["src/hooks/*"],
+      "@hooks": ["src/hooks"],
+      "@state/*": ["src/state/*"],
+      "@state": ["src/state"],
+      "@assets/*": ["src/assets/*"],
+      "@assets": ["src/assets"],
+      "@config/*": ["src/config/*"],
+      "@config": ["src/config"]
+    }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules"] 
 }
