@@ -1,10 +1,22 @@
 import React from "react";
 import ChatPage from "./components/pages/chatPage/ChatPage";
 
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#000",
+    },
+  },
+});
+
 function App() {
   return (
     <div>
-      <ChatPage />
+      <ThemeProvider theme={theme}>
+        <ChatPage />
+      </ThemeProvider>
     </div>
   );
 }

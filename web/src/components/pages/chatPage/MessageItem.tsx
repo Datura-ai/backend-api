@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Avatar, Box, Skeleton, Stack, Typography } from "@mui/material";
 import Message from "../../../types/Message";
 import ImagePreview from "../../common/ImagePreview";
+import { capitalize } from "../../../utils/capitalize";
 
 interface MessageItemProps {
   message: Message;
@@ -20,11 +21,11 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
       break;
     case "image-loading":
       contentElem = (
-        <Skeleton width={"50%"} height={"40vh"} sx={{ transform: "none" }} />
+        <Skeleton width={"40vw"} height={"40vh"} sx={{ transform: "none" }} />
       );
       break;
     case "text-loading":
-      contentElem = <Skeleton width={"50%"} sx={{ transform: "none" }} />;
+      contentElem = <Skeleton width={"40vw"} sx={{ transform: "none" }} />;
       break;
     case "error":
       contentElem = (
@@ -33,14 +34,25 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
         </Typography>
       );
   }
+
   return (
     <Box
       sx={{
-        marginBottom: "16px",
+        py: { xs: "0.5rem", sm: "1.5rem" },
+        px: "1rem",
+        maxWidth: { lg: "48rem" },
+        mx: { lg: "auto" },
       }}
     >
-      <Typography fontWeight={"bold"}>{message.author}</Typography>
-      {contentElem}
+      <Stack flexDirection="row" gap="0.785rem">
+        <Avatar src={message.author === "ChatBot" ? "./download.png" : ""} />
+        <Stack flexDirection="column">
+          <Typography fontWeight={"bold"}>
+            {capitalize(message.author)}
+          </Typography>
+          {contentElem}
+        </Stack>
+      </Stack>
     </Box>
   );
 };

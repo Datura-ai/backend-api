@@ -4,13 +4,14 @@ import {
   fetchEventSource,
 } from "@microsoft/fetch-event-source";
 
-export const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_HOST;
+export const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_HOST ;
+
 export const generateImage = (prompt: string) => {
-  return axios.post(`${BACKEND_BASE_URL}/generate-image`, { prompt: prompt });
+  return axios.post(`${BACKEND_BASE_URL}/generate-image`, { prompt });
 };
 
-export const fetchTextMessage = async (
-  prompt: string,
+export const fetchTextMessage = async <T>(
+  prompt: T[],
   onopen: (res: Response) => void,
   onmessage: (event: EventSourceMessage) => void,
   onerror: (err: any) => void,
@@ -19,7 +20,7 @@ export const fetchTextMessage = async (
   await fetchEventSource(`${BACKEND_BASE_URL}/generate-text`, {
     method: "POST",
     headers: { Accept: "text/event-stream" },
-    body: JSON.stringify({ prompt: prompt }),
+    body: JSON.stringify({ prompt }),
     // @ts-ignore
     onopen(res) {
       onopen(res);
@@ -35,3 +36,4 @@ export const fetchTextMessage = async (
     },
   });
 };
+

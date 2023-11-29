@@ -1,12 +1,11 @@
 import React from "react";
-import { Container } from "@mui/material";
 import ChatWindow from "./ChatWindow";
-
+import Layout from "../../Layout/Layout";
 const ChatPage: React.FC = () => {
   return (
-    <Container maxWidth={"lg"}>
+    <Layout>
       <ChatWindow />
-    </Container>
+    </Layout>
   );
 };
 
