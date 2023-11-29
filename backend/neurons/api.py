@@ -28,7 +28,8 @@ async def query_synapse_image(dendrite, metagraph, subtensor, prompt):
         quality = "standard"
         style = "vivid"
 
-        syn = ImageResponse(messages=prompt, engine=engine, size=size, quality=quality, style=style)
+        syn = ImageResponse(messages=prompt, engine=engine,
+                            size=size, quality=quality, style=style)
 
         async def main():
             responses = await dendrite([axon], syn, deserialize=False, timeout=50)
@@ -41,13 +42,15 @@ async def query_synapse_image(dendrite, metagraph, subtensor, prompt):
         full_response = await main()
         return full_response
     except Exception as e:
-        bt.logging.error(f"General exception at step: {e}\n{traceback.format_exc()}")
+        bt.logging.error(
+            f"General exception at step: {e}\n{traceback.format_exc()}")
 
 
-async def query_synapse_text(dendrite, metagraph, subtensor, prompt):
+async def query_synapse_text(dendrite, metagraph, subtensor, prompts):
     try:
         axon = metagraph.axons[87]
-        syn = StreamPrompting(messages=[{"role": "user", "content": prompt}], engine="gpt-4-1106-preview", seed=1234)
+        syn = StreamPrompting(
+            messages=prompts, engine="gpt-4-1106-preview", seed=1234)
 
         responses = await dendrite([axon], syn, deserialize=False, streaming=True)
         for resp in responses:
@@ -56,7 +59,8 @@ async def query_synapse_text(dendrite, metagraph, subtensor, prompt):
                     yield f"data: {chunk[0]}\n\n"
 
     except Exception as e:
-        bt.logging.error(f"General exception at step: {e}\n{traceback.format_exc()}")
+        bt.logging.error(
+            f"General exception at step: {e}\n{traceback.format_exc()}")
 
 
 def main():

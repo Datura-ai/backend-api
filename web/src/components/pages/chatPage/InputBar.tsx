@@ -1,6 +1,6 @@
+import { Box, MenuItem, Select, TextField } from "@mui/material";
 import React, { useState } from "react";
-import { Box, TextField, IconButton, MenuItem, Select } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
+import SendButton from "./SendButton";
 
 interface InputBarProps {
   onSendMessage: (message: string) => void;
@@ -45,7 +45,14 @@ const InputBar: React.FC<InputBarProps> = ({
       <Select
         onChange={(e) => setMode(e.target.value as "text" | "image")}
         value={mode}
-        sx={{ minWidth: "7vw" }}
+        sx={{
+          minWidth: "7vw",
+          "& .MuiSelect-select": {
+            padding: "14px 16px",
+          },
+          borderRadius: "16px",
+        }}
+        size="small"
       >
         <MenuItem value={"text"}>Text</MenuItem>
         <MenuItem value={"image"}>Image</MenuItem>
@@ -61,14 +68,28 @@ const InputBar: React.FC<InputBarProps> = ({
           "& .MuiOutlinedInput-root": {
             "&.Mui-focused fieldset": {
               borderColor: "initial",
+              borderWidth: "1px",
             },
           },
+
+          "& .MuiInputBase-root": {
+            borderRadius: "16px",
+          },
+
           marginLeft: "8px",
+          input: {
+            padding: "14px 16px",
+          },
+        }}
+        InputProps={{
+          endAdornment: (
+            <SendButton
+              disabled={!message || message.length < 1}
+              onClick={handleSend}
+            />
+          ),
         }}
       />
-      <IconButton onClick={handleSend} color="inherit">
-        <SendIcon fontSize={"large"} />
-      </IconButton>
     </Box>
   );
 };
