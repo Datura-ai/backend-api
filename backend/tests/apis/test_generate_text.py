@@ -1,6 +1,5 @@
 from http import HTTPStatus
 
-
 URL_PATH = "/generate-text"
 
 

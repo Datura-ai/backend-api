@@ -1,37 +1,44 @@
-import pydantic
-import bittensor as bt
 import typing
-from abc import ABC, abstractmethod
-from typing import List, Union, Callable, Awaitable, Dict, Optional
-from starlette.responses import StreamingResponse
-from pydantic import BaseModel, Field
+from typing import Dict, List, Optional
 
-class IsAlive( bt.Synapse ):   
-    answer: typing.Optional[ str ] = None
+import bittensor as bt
+import pydantic
+from starlette.responses import StreamingResponse
+
+
+class IsAlive(bt.Synapse):
+    answer: typing.Optional[str] = None
     completion: str = pydantic.Field(
         "",
         title="Completion",
-        description="Completion status of the current StreamPrompting object. This attribute is mutable and can be updated.",
+        description=(
+            "Completion status of the current StreamPrompting object. "
+            "This attribute is mutable and can be updated."
+        ),
     )
 
-class ImageResponse( bt.Synapse ):
+
+class ImageResponse(bt.Synapse):
     completion: Optional[Dict] = None
     messages: str
     engine: str
     style: str
     size: str
     quality: str
-    required_hash_fields: List[str] = ["messages"] 
+    required_hash_fields: List[str] = ["messages"]
 
     def deserialize(self) -> Dict:
         return self.completion
 
-class StreamPrompting(bt.StreamingSynapse):
 
+class StreamPrompting(bt.StreamingSynapse):
     messages: List[Dict[str, str]] = pydantic.Field(
         ...,
         title="Messages",
-        description="A list of messages in the StreamPrompting scenario, each containing a role and content. Immutable.",
+        description=(
+            "A list of messages in the StreamPrompting scenario, "
+            "each containing a role and content. Immutable."
+        ),
         allow_mutation=False,
     )
 
@@ -45,25 +52,36 @@ class StreamPrompting(bt.StreamingSynapse):
     seed: int = pydantic.Field(
         "",
         title="Seed",
-        description="Seed for text generation. This attribute is immutable and cannot be updated.",
+        description=(
+            "Seed for text generation. "
+            "This attribute is immutable and cannot be updated."
+        ),
     )
 
     completion: str = pydantic.Field(
         "",
         title="Completion",
-        description="Completion status of the current StreamPrompting object. This attribute is mutable and can be updated.",
+        description=(
+            "Completion status of the current StreamPrompting object. "
+            "This attribute is mutable and can be updated."
+        ),
     )
 
     engine: str = pydantic.Field(
         "",
         title="engine",
-        description="The engine that which to use when calling openai for your response.",
+        description=(
+            "The engine that which to use when "
+            "calling openai for your response."
+        ),
     )
 
     async def process_streaming_response(self, response: StreamingResponse):
         if self.completion is None:
             self.completion = ""
-        bt.logging.debug("Processing streaming response (StreamingSynapse base class).")
+        bt.logging.debug(
+            "Processing streaming response (StreamingSynapse base class)."
+        )
         async for chunk in response.content.iter_any():
             bt.logging.debug(f"Processing chunk: {chunk}")
             tokens = chunk.decode("utf-8").split("\n")

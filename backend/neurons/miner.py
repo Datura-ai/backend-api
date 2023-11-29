@@ -1,22 +1,21 @@
-import copy
-import time
-import asyncio
 import argparse
-import threading
-import traceback
+import asyncio
+import copy
 import os
+import threading
+import time
+import traceback
 from abc import ABC, abstractmethod
 from functools import partial
-from starlette.types import Send
-from openai import OpenAI
-from openai import AsyncOpenAI
-import bittensor as bt
-from transformers import GPT2Tokenizer
-from typing import List, Dict, Tuple, Union, Callable, Awaitable
-from template.protocol import StreamPrompting, IsAlive, ImageResponse
-from config import get_config, check_config
+from typing import Dict, Tuple
 
-OpenAI.api_key = os.environ.get('OPENAI_API_KEY')
+import bittensor as bt
+from config import check_config, get_config
+from openai import AsyncOpenAI, OpenAI
+from starlette.types import Send
+from template.protocol import ImageResponse, IsAlive, StreamPrompting
+
+OpenAI.api_key = os.environ.get("OPENAI_API_KEY")
 if not OpenAI.api_key:
     raise ValueError("Please set the OPENAI_API_KEY environment variable.")
 
@@ -37,41 +36,50 @@ class StreamMiner(ABC):
         bt.logging(config=self.config, logging_dir=self.config.full_path)
         bt.logging.info("Setting up bittensor objects.")
 
-        # Wallet holds cryptographic information, ensuring secure transactions and communication.
+        # Wallet holds cryptographic information,
+        # ensuring secure transactions and communication.
         self.wallet = wallet or bt.wallet(config=self.config)
         bt.logging.info(f"Wallet {self.wallet}")
 
-        # subtensor manages the blockchain connection, facilitating interaction with the Bittensor blockchain.
+        # subtensor manages the blockchain connection,
+        # facilitating interaction with the Bittensor blockchain.
         self.subtensor = subtensor or bt.subtensor(config=self.config)
         bt.logging.info(f"Subtensor: {self.subtensor}")
         bt.logging.info(
-            f"Running miner for subnet: {self.config.netuid} on network: {self.subtensor.chain_endpoint} with config:"
+            f"Running miner for subnet: {self.config.netuid} on network: "
+            f"{self.subtensor.chain_endpoint} with config:"
         )
 
-        # metagraph provides the network's current state, holding state about other participants in a subnet.
+        # metagraph provides the network's current state,
+        # holding state about other participants in a subnet.
         self.metagraph = self.subtensor.metagraph(self.config.netuid)
         bt.logging.info(f"Metagraph: {self.metagraph}")
 
         if self.wallet.hotkey.ss58_address not in self.metagraph.hotkeys:
             bt.logging.error(
-                f"\nYour validator: {self.wallet} if not registered to chain connection: {self.subtensor} \nRun btcli register and try again. "
+                f"\nYour validator: {self.wallet} if not registered to "
+                f"chain connection: {self.subtensor} \n"
+                "Run btcli register and try again. "
             )
             exit()
         else:
-            # Each miner gets a unique identity (UID) in the network for differentiation.
+            # Each miner gets a unique identity (UID)
+            # in the network for differentiation.
             self.my_subnet_uid = self.metagraph.hotkeys.index(
                 self.wallet.hotkey.ss58_address
             )
             bt.logging.info(f"Running miner on uid: {self.my_subnet_uid}")
 
-        # The axon handles request processing, allowing validators to send this process requests.
-        self.axon = axon or bt.axon(wallet=self.wallet, port=self.config.axon.port)
-        # Attach determiners which functions are called when servicing a request.
-        bt.logging.info(f"Attaching forward function to axon.")
+        # The axon handles request processing,
+        # allowing validators to send this process requests.
+        self.axon = axon or bt.axon(
+            wallet=self.wallet, port=self.config.axon.port
+        )
+        # Attach determiners which functions are called
+        # when servicing a request.
+        bt.logging.info("Attaching forward function to axon.")
         print(f"Attaching forward function to axon. {self._prompt}")
-        self.axon.attach(
-            forward_fn=self._prompt,
-        ).attach(
+        self.axon.attach(forward_fn=self._prompt,).attach(
             forward_fn=self.is_alive,
         ).attach(
             forward_fn=self._images,
@@ -119,23 +127,30 @@ class StreamMiner(ABC):
             hotkey_ss58=self.wallet.hotkey.ss58_address,
         ):
             bt.logging.error(
-                f"Wallet: {self.wallet} is not registered on netuid {self.config.netuid}"
-                f"Please register the hotkey using `btcli s register --netuid 18` before trying again"
+                f"Wallet: {self.wallet} is not registered on "
+                f"netuid {self.config.netuid}. "
+                "Please register the hotkey using "
+                "`btcli s register --netuid 18` before trying again"
             )
             exit()
+
         bt.logging.info(
-            f"Serving axon {StreamPrompting} on network: {self.config.subtensor.chain_endpoint} with netuid: {self.config.netuid}"
+            f"Serving axon {StreamPrompting} on network: "
+            f"{self.config.subtensor.chain_endpoint} "
+            f"with netuid: {self.config.netuid}"
         )
         self.axon.serve(netuid=self.config.netuid, subtensor=self.subtensor)
-        bt.logging.info(f"Starting axon server on port: {self.config.axon.port}")
+        bt.logging.info(
+            f"Starting axon server on port: {self.config.axon.port}"
+        )
         self.axon.start()
         self.last_epoch_block = self.subtensor.get_current_block()
         bt.logging.info(f"Miner starting at block: {self.last_epoch_block}")
-        bt.logging.info(f"Starting main loop")
+        bt.logging.info("Starting main loop")
         step = 0
         try:
             while not self.should_exit:
-                start_epoch = time.time()
+                time.time()
 
                 # --- Wait until next epoch.
                 current_block = self.subtensor.get_current_block()
@@ -180,7 +195,7 @@ class StreamMiner(ABC):
             bt.logging.success("Miner killed by keyboard interrupt.")
             exit()
 
-        except Exception as e:
+        except Exception:
             bt.logging.error(traceback.format_exc())
 
     def run_in_background_thread(self):
@@ -233,7 +248,7 @@ class StreamingTemplateMiner(StreamMiner):
                 size=size,
                 quality=quality,
                 style=style,
-                )
+            )
 
             image_created = meta.created
             image_url = meta.data[0].url
@@ -248,33 +263,36 @@ class StreamingTemplateMiner(StreamMiner):
             }
 
             synapse.completion = image_data
-            bt.logging.info(f"returning image response of {synapse.completion}")
+            bt.logging.info(
+                f"returning image response of {synapse.completion}"
+            )
             return synapse
 
         except Exception as e:
             bt.logging.error(f"error in images: {e}\n{traceback.format_exc()}")
 
-
-
     def prompt(self, synapse: StreamPrompting) -> StreamPrompting:
         bt.logging.info(f"starting processing for synapse {synapse}")
-        
+
         async def _prompt(synapse, send: Send):
             try:
                 engine = synapse.engine
                 messages = synapse.messages
-                seed=synapse.seed
+                seed = synapse.seed
                 bt.logging.info(synapse)
-                bt.logging.info(f"question is {messages} with engine {engine}, seed: {seed}")
+                bt.logging.info(
+                    f"question is {messages} with engine {engine}, "
+                    f"seed: {seed}"
+                )
                 response = await client.chat.completions.create(
-                    model= engine,
-                    messages= messages,
-                    temperature= 0.0001,
-                    stream= True,
+                    model=engine,
+                    messages=messages,
+                    temperature=0.0001,
+                    stream=True,
                     seed=seed,
                 )
                 buffer = []
-                N=1
+                N = 1
                 async for chunk in response:
                     token = chunk.choices[0].delta.content or ""
                     buffer.append(token)
@@ -302,7 +320,9 @@ class StreamingTemplateMiner(StreamMiner):
                     bt.logging.info(f"Streamed tokens: {joined_buffer}")
                     print(f"response is {response}")
             except Exception as e:
-                bt.logging.error(f"error in _prompt {e}\n{traceback.format_exc()}")
+                bt.logging.error(
+                    f"error in _prompt {e}\n{traceback.format_exc()}"
+                )
 
         token_streamer = partial(_prompt, synapse)
         return synapse.create_streaming_response(token_streamer)

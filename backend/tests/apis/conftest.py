@@ -14,7 +14,7 @@ def test_client(mocker):
 
     try:
         with open("./data/metagraph.pickle", "rb") as f:
-            pickled_metagraph = pickle.load(f)
+            pickled_metagraph = pickle.load(f)  # nosec
             mocker.patch.object(
                 bt_subtensor,
                 "metagraph",
