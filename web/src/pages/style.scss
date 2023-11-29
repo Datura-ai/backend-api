@@ -1,0 +1,59 @@
+.home-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .home-page-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
+  .home-page-title {
+    & > * {
+      font-size: 3rem;
+      line-height: 3rem;
+      letter-spacing: 0.01rem;
+      font-weight: bold;
+      text-align: center;
+      padding-top: 2rem;
+    }
+
+    a {
+      padding-left: 1rem;
+      @media (pointer: fine) {
+        text-decoration: none;
+      }
+      position: relative;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      .launch-icon {
+        padding-left: 0.5rem;
+      }
+
+      &:visited {
+        color: black;
+      }
+    }
+  }
+
+  main {
+    height: 100%;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+
+    .sections-wrap {
+      height: 100%;
+    }
+  }
+}
+
+.chat-page {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 4rem 1fr;
+}

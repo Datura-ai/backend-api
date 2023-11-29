@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Skeleton, Typography } from "@mui/material";
-import Message from "../../../types/Message";
-import ImagePreview from "../../common/ImagePreview";
+import { AuthorType, Message } from "../../types/Message";
+import ImagePreview from "../common/ImagePreview";
 
 interface MessageItemProps {
   message: Message;
@@ -34,12 +34,7 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
       );
   }
   return (
-    <Box
-      sx={{
-        marginBottom: "16px",
-      }}
-    >
-      <Typography fontWeight={"bold"}>{message.author}</Typography>
+    <Box className={`message-item ${message.author === AuthorType.USER ? "query" : "answer"}`}>
       {contentElem}
     </Box>
   );
