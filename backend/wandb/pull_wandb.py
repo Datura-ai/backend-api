@@ -17,24 +17,35 @@
 import wandb
 import os
 
+os.environ["WANDB_API_KEY"] = '445f997d428ad93486d2f6187235620469567157'
+
 # Replace with your run path "entity/project/run_id"
-run_path = "entity/project/run_id"
+run_path = "entity/project/synthetic-QA"
 
 # Initialize wandb API
 api = wandb.Api()
 
 # Access the run
-run = api.run("/cortex-t/synthetic-QA/runs/amczp753")
 
-# Create a directory to store images
-os.makedirs("wandb_images", exist_ok=True)
+def get_run_images():
+    run = api.run("/cortex-t/synthetic-QA/runs/amczp753")
+    images = []
+    for file in run.files():
+        if file.name.endswith(".png") or file.name.endswith(".jpg"):
+            # print(file)
+            images.append(file.name)
+    return images            
 
-# Iterate through all the files in the run
-for file in run.files():
-    # Check if the file is an image
-    if file.name.endswith(".png") or file.name.endswith(".jpg"):
-        # Download the file
-        file.download(root="wandb_images")
-        print(f"Downloaded {file.name}")
 
-print("All images have been downloaded to the 'wandb_images' directory.")
+# # Create a directory to store images
+# os.makedirs("wandb_images", exist_ok=True)
+
+# # Iterate through all the files in the run
+# for file in run.files():
+#     # Check if the file is an image
+#     if file.name.endswith(".png") or file.name.endswith(".jpg"):
+#         # Download the file
+#         # file.download(root="wandb_images")
+#         print(f"Downloaded {file.url}")
+
+# print("All images have been downloaded to the 'wandb_images' directory.")

@@ -34,18 +34,14 @@ const InputBar: React.FC<InputBarProps> = ({
   return (
     <Box
       sx={{
-        bottom: 0,
-        left: 0,
-        right: 0,
         display: "flex",
         padding: "10px",
-        position: "absolute",
       }}
     >
       <Select
         onChange={(e) => setMode(e.target.value as "text" | "image")}
         value={mode}
-        sx={{ minWidth: "7vw" }}
+        sx={{ minWidth: "100px" }}
       >
         <MenuItem value={"text"}>Text</MenuItem>
         <MenuItem value={"image"}>Image</MenuItem>

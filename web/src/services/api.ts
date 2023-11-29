@@ -8,6 +8,9 @@ export const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_HOST;
 export const generateImage = (prompt: string) => {
   return axios.post(`${BACKEND_BASE_URL}/generate-image`, { prompt: prompt });
 };
+export const getShowcaseImages = (sortBy: string) => {
+  return axios.get(`${BACKEND_BASE_URL}/showcase-images?sortBy=${sortBy}`);
+};
 
 export const fetchTextMessage = async (
   prompt: string,

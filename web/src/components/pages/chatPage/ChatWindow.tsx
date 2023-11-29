@@ -134,7 +134,7 @@ const ChatWindow: React.FC = () => {
   }, [messages]);
 
   return (
-    <Box sx={{ height: "100vh", overflowY: "auto", position: "relative" }}>
+    <Box sx={{ height: "100%", overflowY: "auto", position: "relative" }}>
       <MessagesContainer messages={messages} />
       <InputBar
         onSendMessage={handleSendMessage}
