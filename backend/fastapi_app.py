@@ -26,11 +26,13 @@ async def get_image(prompt_dict: dict):
     if not prompt:
         raise HTTPException(status_code=400, detail="Prompt is required")
 
-    generated_images = asyncio.run(query_synapse_image(dendrite, metagraph, subtensor, prompt))
+    generated_images = asyncio.run(query_synapse_image(
+        dendrite, metagraph, subtensor, prompt))
     try:
         image_url = generated_images[0].deserialize().get("url")
     except Exception:
-        raise HTTPException(status_code=500, detail="Can't generate image. Please try again")
+        raise HTTPException(
+            status_code=500, detail="Can't generate image. Please try again")
     return image_url
 
 
@@ -38,11 +40,10 @@ async def get_image(prompt_dict: dict):
 async def get_text(request: Request):
     try:
         body = await request.json()
-        prompt = body.get('prompt')
+        prompts = body.get('prompts')
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="Cant decode JSON")
-    if not prompt:
+    if not prompts:
         raise HTTPException(status_code=400, detail="Prompt is required")
 
-    return StreamingResponse(query_synapse_text(dendrite, metagraph, subtensor, prompt), media_type='text/event-stream')
-
+    return StreamingResponse(query_synapse_text(dendrite, metagraph, subtensor, prompts), media_type='text/event-stream')
