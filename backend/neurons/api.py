@@ -47,7 +47,7 @@ async def query_synapse_image(dendrite, metagraph, subtensor, prompt):
 async def query_synapse_text(dendrite, metagraph, subtensor, prompt):
     try:
         axon = metagraph.axons[87]
-        syn = StreamPrompting(messages=[{"role": "user", "content": prompt}], engine="gpt-4-1106-preview", seed=1234)
+        syn = StreamPrompting(messages=prompt, engine="gpt-4-1106-preview", seed=1234)
 
         responses = await dendrite([axon], syn, deserialize=False, streaming=True)
         for resp in responses:
