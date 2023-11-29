@@ -12,3 +12,16 @@ services:
     command: uvicorn fastapi_app:app --host 0.0.0.0
     deploy:
       replicas: 1
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:

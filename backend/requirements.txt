@@ -126,3 +126,5 @@ wandb==0.16.0
 websocket-client==1.6.4
 xxhash==3.4.1
 yarl==1.9.3
+redis==5.0.0
+types-redis==4.6.0.7
