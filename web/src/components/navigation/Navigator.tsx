@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './Navigator.css'
 
 const Navigator: React.FC = () => (
   <nav>
     <ul>
-      <li>
+      <li className='navbar-element'>
         <Link to="/">Home</Link>
       </li>
-      <li>
+      <li className='navbar-element'>
         <Link to="/chat">Chat</Link>
       </li>
     </ul>
