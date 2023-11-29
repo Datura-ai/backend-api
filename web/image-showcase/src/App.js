@@ -1,6 +1,5 @@
 import React from "react";
-import ChatPage from "./components/pages/chatPage/ChatPage";
-
+import ShowCasePage from "./Pages/ShowCasePage";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme({
@@ -11,14 +10,12 @@ const theme = createTheme({
   },
 });
 
-function App() {
+const App = () => {
   return (
-    <div>
-      <ThemeProvider theme={theme}>
-        <ChatPage />
-      </ThemeProvider>
-    </div>
+    <ThemeProvider theme={theme}>
+      <ShowCasePage />
+    </ThemeProvider>
   );
-}
+};
 
 export default App;

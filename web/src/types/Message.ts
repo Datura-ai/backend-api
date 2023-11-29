@@ -1,7 +1,8 @@
 type Message = {
-  author: "user" | "bot";
+  author: "user" | "ChatBot";
   text: string;
   type: "text" | "image" | "image-loading" | "text-loading" | "error";
+
 };
 
 export default Message;

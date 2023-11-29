@@ -1,20 +1,9 @@
 import React, { useState } from "react";
-import { Box, TextField, IconButton, MenuItem, Select } from "@mui/material";
+import { Box, IconButton, InputAdornment, TextField } from "@mui/material";
+import InputBarProps from "../../../types/InputBarProps";
 import SendIcon from "@mui/icons-material/Send";
 
-interface InputBarProps {
-  onSendMessage: (message: string) => void;
-  enabled: boolean;
-  mode: "image" | "text";
-  setMode: (mode: "image" | "text") => void;
-}
-
-const InputBar: React.FC<InputBarProps> = ({
-  onSendMessage,
-  enabled,
-  mode,
-  setMode,
-}) => {
+const InputBar: React.FC<InputBarProps> = ({ onSendMessage, enabled }) => {
   const [message, setMessage] = useState("");
 
   const handleSend = () => {
@@ -38,37 +27,42 @@ const InputBar: React.FC<InputBarProps> = ({
         left: 0,
         right: 0,
         display: "flex",
-        padding: "10px",
+        pb: "16px",
+        px: "16px",
         position: "absolute",
+        maxWidth: { lg: "50rem" },
+        zIndex: 999,
+        mx: { lg: "auto" },
       }}
     >
-      <Select
-        onChange={(e) => setMode(e.target.value as "text" | "image")}
-        value={mode}
-        sx={{ minWidth: "7vw" }}
-      >
-        <MenuItem value={"text"}>Text</MenuItem>
-        <MenuItem value={"image"}>Image</MenuItem>
-      </Select>
+     
+
       <TextField
         fullWidth
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Type a message..."
+        placeholder="Message ChatBot..."
         disabled={!enabled}
         sx={{
           "& .MuiOutlinedInput-root": {
+            borderRadius: "18px",
             "&.Mui-focused fieldset": {
               borderColor: "initial",
             },
           },
-          marginLeft: "8px",
+          
+        }}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={handleSend} color="inherit">
+                <SendIcon fontSize="medium" />
+              </IconButton>
+            </InputAdornment>
+          ),
         }}
       />
-      <IconButton onClick={handleSend} color="inherit">
-        <SendIcon fontSize={"large"} />
-      </IconButton>
     </Box>
   );
 };

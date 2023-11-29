@@ -4,6 +4,7 @@ import json
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
 
 from neurons.api import initialize, query_synapse_image, query_synapse_text
 
@@ -17,11 +18,14 @@ app.add_middleware(
     max_age=3600,
 )
 
+
 _, _, subtensor, dendrite, metagraph = initialize()
+
 
 
 @app.post("/generate-image")
 async def get_image(prompt_dict: dict):
+
     prompt = prompt_dict.get('prompt')
     if not prompt:
         raise HTTPException(status_code=400, detail="Prompt is required")

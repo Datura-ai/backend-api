@@ -2,12 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import MessagesContainer from "./MessagesContainer";
 import Message from "../../../types/Message";
+import TextMessage from "../../../types/TextMessage";
+
 import InputBar from "./InputBar";
 import { fetchTextMessage, generateImage } from "../../../services/api";
 import { EventSourceMessage } from "@microsoft/fetch-event-source";
+import { type } from "os";
 
 const ChatWindow: React.FC = () => {
   const [messages, setMessages] = useState<Array<Message>>([]);
+
+  const [textMessages, setTextMessages] = useState<Array<TextMessage>>([]);
+
   const [mode, setMode] = useState<"image" | "text">("text");
   const [inputEnabled, setInputEnabled] = useState<boolean>(true);
 
@@ -17,35 +23,43 @@ const ChatWindow: React.FC = () => {
       { author: "user", text: newMessage, type: "text" },
     ]);
 
+    if (mode === "text") {
+      setTextMessages((prevState) => [
+        ...prevState,
+        { role: "user", content: newMessage },
+      ]);
+    }
+
     switch (mode) {
       case "text":
         setMessages((prevState) => [
           ...prevState,
           {
-            author: "bot",
+            author: "ChatBot",
             text: "",
             type: "text-loading",
           },
         ]);
+
         break;
       case "image":
         setMessages((prevState) => [
           ...prevState,
-          { author: "bot", text: "", type: "image-loading" },
+          { author: "ChatBot", text: "", type: "image-loading" },
         ]);
         setInputEnabled(false);
         generateImage(newMessage)
           .then((data) => {
             setMessages((prevState) => [
               ...prevState.slice(0, -1),
-              { author: "bot", text: data.data, type: "image" },
+              { author: "ChatBot", text: data.data, type: "image" },
             ]);
           })
           .catch(() => {
             setMessages((prevState) => [
               ...prevState.slice(0, -1),
               {
-                author: "bot",
+                author: "ChatBot",
                 text: "Can't generate image. Please try again",
                 type: "error",
               },
@@ -64,19 +78,36 @@ const ChatWindow: React.FC = () => {
         setMessages((prevState) => [
           ...prevState.slice(0, -1),
           {
-            author: "bot",
+            author: "ChatBot",
             text: "",
             type: "text",
           },
         ]);
+
+        setTextMessages((prevState) => [
+          ...prevState,
+          {
+            role: "system",
+            content: "",
+          },
+        ]);
+
         setInputEnabled(false);
       } else {
         setMessages((prevState) => [
           ...prevState.slice(0, -1),
           {
-            author: "bot",
+            author: "ChatBot",
             text: "Can't generate text. Please try again",
             type: "error",
+          },
+        ]);
+
+        setTextMessages((prevState) => [
+          ...prevState,
+          {
+            role: "system",
+            content: "Can't generate text. Please try again",
           },
         ]);
       }
@@ -97,7 +128,7 @@ const ChatWindow: React.FC = () => {
         setMessages((prevState) => [
           ...prevState.slice(0, -1),
           {
-            author: "bot",
+            author: "ChatBot",
             text: "Error during text generation. Please try again",
             type: "error",
           },
@@ -106,7 +137,7 @@ const ChatWindow: React.FC = () => {
         setMessages((prevState) => [
           ...prevState,
           {
-            author: "bot",
+            author: "ChatBot",
             text: "Error during text generation. Please try again",
             type: "error",
           },
@@ -120,28 +151,32 @@ const ChatWindow: React.FC = () => {
     };
 
     if (
-      messages[messages.length - 1]?.author === "bot" &&
+      messages[messages.length - 1]?.author === "ChatBot" &&
       messages[messages.length - 1]?.type === "text-loading"
     ) {
-      fetchTextMessage(
-        messages[messages.length - 2].text,
-        onopen,
-        onmessage,
-        onerror,
-        onclose,
-      ).catch(() => setInputEnabled(true));
+      fetchTextMessage(textMessages, onopen, onmessage, onerror, onclose).catch(
+        () => setInputEnabled(true)
+      );
     }
   }, [messages]);
 
   return (
-    <Box sx={{ height: "100vh", overflowY: "auto", position: "relative" }}>
-      <MessagesContainer messages={messages} />
-      <InputBar
-        onSendMessage={handleSendMessage}
-        enabled={inputEnabled}
-        mode={mode}
-        setMode={setMode}
-      />
+    <Box
+      position={"relative"}
+      sx={{
+        maxHeight: {
+          xs: "100vh",
+     
+        },
+        minHeight: {
+          xs: "100vh",
+        },
+        height: "100%",
+      }}
+    >
+      <MessagesContainer messages={messages} mode={mode} setMode={setMode} />
+
+      <InputBar onSendMessage={handleSendMessage} enabled={inputEnabled} />
     </Box>
   );
 };

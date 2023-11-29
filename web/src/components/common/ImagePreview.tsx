@@ -5,10 +5,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
-  IconButton,
 } from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
 
 interface ImagePreviewProps {
   imageUrl: string;
@@ -38,21 +35,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl }) => {
         }}
       />
       <Dialog open={open} onClose={handleClose} maxWidth="md">
-        <DialogTitle>
-          <IconButton
-            edge="end"
-            color="inherit"
-            onClick={handleClose}
-            aria-label="close"
-            sx={{
-              position: "absolute",
-              right: 16,
-              top: 0,
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
+       
         <DialogContent>
           <DialogContentText>
             <img
@@ -67,9 +50,30 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Close
-          </Button>
+        <Button
+             onClick={handleClose}
+              sx={{
+                py: 0.5,
+                fontWeight: "bold",
+                px: 1,
+                color:"white",
+                minWidth: "100px",
+                textTransform: "none",
+                backgroundColor: "black",
+                "&:hover": {
+                  backgroundColor: "black",
+                },
+                "&:active": {
+                  backgroundColor: "black",
+                },
+                "&:focus": {
+                  backgroundColor: "black",
+                },
+              }}
+            >
+              Close
+            </Button>
+
         </DialogActions>
       </Dialog>
     </div>
