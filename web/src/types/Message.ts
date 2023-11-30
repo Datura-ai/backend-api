@@ -1,5 +1,5 @@
 type Message = {
-  author: "user" | "bot";
+  author: "User" | "Bot";
   text: string;
   type: "text" | "image" | "image-loading" | "text-loading" | "error";
 };

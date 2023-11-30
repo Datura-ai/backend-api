@@ -4,7 +4,7 @@ import ChatWindow from "./ChatWindow";
 
 const ChatPage: React.FC = () => {
   return (
-    <Container maxWidth={"lg"}>
+    <Container maxWidth={"lg"} style={{height:"100%"}} >
       <ChatWindow />
     </Container>
   );

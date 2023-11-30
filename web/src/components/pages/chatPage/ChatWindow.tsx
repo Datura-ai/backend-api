@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 import MessagesContainer from "./MessagesContainer";
 import Message from "../../../types/Message";
 import InputBar from "./InputBar";
 import { fetchTextMessage, generateImage } from "../../../services/api";
 import { EventSourceMessage } from "@microsoft/fetch-event-source";
+import { RiRobot2Line } from "react-icons/ri";
+
+import { mockData } from "../../../mockData";
 
 const ChatWindow: React.FC = () => {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [mode, setMode] = useState<"image" | "text">("text");
   const [inputEnabled, setInputEnabled] = useState<boolean>(true);
-
   const handleSendMessage = (newMessage: string) => {
     setMessages((prevState) => [
       ...prevState,
-      { author: "user", text: newMessage, type: "text" },
+      { author: "User", text: newMessage, type: "text" },
     ]);
 
     switch (mode) {
@@ -22,7 +24,7 @@ const ChatWindow: React.FC = () => {
         setMessages((prevState) => [
           ...prevState,
           {
-            author: "bot",
+            author: "Bot",
             text: "",
             type: "text-loading",
           },
@@ -31,21 +33,21 @@ const ChatWindow: React.FC = () => {
       case "image":
         setMessages((prevState) => [
           ...prevState,
-          { author: "bot", text: "", type: "image-loading" },
+          { author: "Bot", text: "", type: "image-loading" },
         ]);
         setInputEnabled(false);
         generateImage(newMessage)
           .then((data) => {
             setMessages((prevState) => [
               ...prevState.slice(0, -1),
-              { author: "bot", text: data.data, type: "image" },
+              { author: "Bot", text: data.data, type: "image" },
             ]);
           })
           .catch(() => {
             setMessages((prevState) => [
               ...prevState.slice(0, -1),
               {
-                author: "bot",
+                author: "Bot",
                 text: "Can't generate image. Please try again",
                 type: "error",
               },
@@ -64,7 +66,7 @@ const ChatWindow: React.FC = () => {
         setMessages((prevState) => [
           ...prevState.slice(0, -1),
           {
-            author: "bot",
+            author: "Bot",
             text: "",
             type: "text",
           },
@@ -74,8 +76,9 @@ const ChatWindow: React.FC = () => {
         setMessages((prevState) => [
           ...prevState.slice(0, -1),
           {
-            author: "bot",
+            author: "Bot",
             text: "Can't generate text. Please try again",
+
             type: "error",
           },
         ]);
@@ -97,7 +100,7 @@ const ChatWindow: React.FC = () => {
         setMessages((prevState) => [
           ...prevState.slice(0, -1),
           {
-            author: "bot",
+            author: "Bot",
             text: "Error during text generation. Please try again",
             type: "error",
           },
@@ -106,7 +109,7 @@ const ChatWindow: React.FC = () => {
         setMessages((prevState) => [
           ...prevState,
           {
-            author: "bot",
+            author: "Bot",
             text: "Error during text generation. Please try again",
             type: "error",
           },
@@ -120,7 +123,7 @@ const ChatWindow: React.FC = () => {
     };
 
     if (
-      messages[messages.length - 1]?.author === "bot" &&
+      messages[messages.length - 1]?.author === "Bot" &&
       messages[messages.length - 1]?.type === "text-loading"
     ) {
       fetchTextMessage(
@@ -134,15 +137,70 @@ const ChatWindow: React.FC = () => {
   }, [messages]);
 
   return (
-    <Box sx={{ height: "100vh", overflowY: "auto", position: "relative" }}>
-      <MessagesContainer messages={messages} />
+      <Stack direction={"column"} spacing={2} height={"100vh"} position={"relative"}>
+
+<Box pt={2}>
+ <Typography color={"#fff"} fontWeight={"bold"} fontSize={"larger"}>ChaTBoT 3.5</Typography>
+
+ </Box> 
+
+        {messages.length > 0 ? (
+          <MessagesContainer messages={messages} mode={mode} />
+        ) : (
+          <>
+            <Grid container sx={{ paddingTop: 13 }}>
+              <Grid item xs={2} >
+
+              </Grid>
+              <Grid item xs={8} display={"flex"} justifyContent={"center"}>
+                <Stack direction={"column"} textAlign={"center"} color={"#fff"}>
+                  <Typography align="center" >
+
+                    <RiRobot2Line fontSize={70} style={{background:"#fff",color:"#000",borderRadius:100,padding:5}}/>
+                  </Typography>
+                  <Typography variant="h5" mt={2}>
+                    How may I assist You ?
+                  </Typography>
+
+                </Stack>
+              </Grid>
+              <Grid item xs={2} >
+
+              </Grid>
+            </Grid>
+            <Grid container sx={{ paddingTop: 10 }}>
+              <Grid item xs={2} >
+
+              </Grid>
+              <Grid item xs={8} display={"flex"} justifyContent={"space-between"} flexWrap={"wrap"}>
+                {mockData?.map((data,index) => (
+                  <Box key={index+1} width={"44%"} border={"1px solid #787878"} pl={2} py={1} mb={2}
+                  borderRadius={4}>
+                    <Stack direction={"column"}>
+                      <Typography color={"#C5C5D2"}>{data.title}</Typography>
+                      <Typography color={"#929292"} fontSize={14}>{data.description}</Typography>
+
+                    </Stack>
+                  </Box>
+                ))}
+
+
+              </Grid>
+              <Grid item xs={2} >
+
+              </Grid>
+            </Grid>
+          </>
+        )}
+
       <InputBar
         onSendMessage={handleSendMessage}
         enabled={inputEnabled}
         mode={mode}
         setMode={setMode}
+        messages={messages}
       />
-    </Box>
+      </Stack>
   );
 };
 

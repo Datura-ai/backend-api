@@ -1,13 +1,22 @@
 import React from "react";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import Message from "../../../types/Message";
 import ImagePreview from "../../common/ImagePreview";
+import { FaHandsHelping, FaUser } from "react-icons/fa";
+import { AiOutlineLike, AiOutlineDislike } from "react-icons/ai";
+import MessageItemContainer from "../MessageItemContainer";
 
-interface MessageItemProps {
+
+
+export interface MessageItemProps {
   message: Message;
+  contentElem?: any
+  Icon?: any
+  mode?:any
+
 }
 
-const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
+const MessageItem: React.FC<MessageItemProps> = ({ message,mode }) => {
   let contentElem;
   switch (message.type) {
     case "text":
@@ -33,14 +42,38 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
         </Typography>
       );
   }
+
+
   return (
     <Box
       sx={{
         marginBottom: "16px",
+      
       }}
     >
-      <Typography fontWeight={"bold"}>{message.author}</Typography>
-      {contentElem}
+      {message.author === "User" ? (
+        <MessageItemContainer
+          Icon={FaUser}
+          message={message}
+          contentElem={contentElem}
+          mode={mode}
+        />
+
+
+      ) : (
+        <MessageItemContainer
+          Icon={FaHandsHelping}
+          message={message}
+          contentElem={contentElem}
+          mode={mode}
+
+       
+        />
+
+
+
+      )}
+
     </Box>
   );
 };
