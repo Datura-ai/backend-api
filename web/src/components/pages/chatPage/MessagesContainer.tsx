@@ -1,13 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import Message from "../../../types/Message";
 import MessageItem from "./MessageItem";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Typography, Stack, Paper, Grid } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { FaHandsHelping } from "react-icons/fa";
+import { IoHelpOutline } from "react-icons/io5";
 
 interface MessagesContainerProps {
   messages: Message[];
+  mode?:any
 }
-const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages }) => {
+const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages,mode }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const scrollToBottom = () => {
@@ -31,22 +34,36 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages }) => {
       ref={messagesEndRef}
       onScroll={handleScroll}
       sx={{
-        height: `85vh`,
+        height: "82vh",
         overflowY: "auto",
-        padding: "16px",
+        border:"1px solid rgb(120, 120, 120)"
+        
+
       }}
     >
-      <Box sx={{ overflow: "auto", flexGrow: 1, padding: "10px" }}>
-        {messages.map((message, index) => (
-          <MessageItem key={index} message={message} />
-        ))}
-      </Box>
+      {messages?.length > 0 && (
+        messages.map((message, index) => (
+          <Box sx={{ overflow: "auto", flexGrow: 1, padding: "10px" }}>
+
+            <MessageItem key={index} message={message} mode={mode}/>
+          </Box>
+        ))
+      )}
+
       {showScrollButton && (
         <IconButton
           onClick={scrollToBottom}
-          sx={{ position: "sticky", bottom: 0, left: "50%" }}
+          style={{cursor:"pointer"}}
+          sx={{ cursor:"pointer", position: "sticky",left:"86%", bottom: 0,color:"#fff",
+          '&:hover': {
+            color:"#fff",
+          },
+          '&:active': {
+            color:"#fff",
+          }, 
+        }}
         >
-          <ArrowDownwardIcon />
+          <ArrowDownwardIcon sx={{cursor:"pointer" }}/>
         </IconButton>
       )}
     </Box>
