@@ -124,7 +124,7 @@ const ChatWindow: React.FC = () => {
       messages[messages.length - 1]?.type === "text-loading"
     ) {
       fetchTextMessage(
-        messages[messages.length - 2].text,
+        messages.slice(0, messages.length - 1),
         onopen,
         onmessage,
         onerror,

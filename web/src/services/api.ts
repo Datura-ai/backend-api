@@ -3,6 +3,9 @@ import {
   EventSourceMessage,
   fetchEventSource,
 } from "@microsoft/fetch-event-source";
+import Message from '../types/Message';
+import { MessageApiAdapter } from "../adapters/messages";
+
 
 export const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_HOST;
 export const generateImage = (prompt: string) => {
@@ -10,7 +13,7 @@ export const generateImage = (prompt: string) => {
 };
 
 export const fetchTextMessage = async (
-  prompt: string,
+  messages: Message[],
   onopen: (res: Response) => void,
   onmessage: (event: EventSourceMessage) => void,
   onerror: (err: any) => void,
@@ -19,7 +22,7 @@ export const fetchTextMessage = async (
   await fetchEventSource(`${BACKEND_BASE_URL}/generate-text`, {
     method: "POST",
     headers: { Accept: "text/event-stream" },
-    body: JSON.stringify({ prompt: prompt }),
+    body: JSON.stringify(MessageApiAdapter.toServer(messages)),
     // @ts-ignore
     onopen(res) {
       onopen(res);
